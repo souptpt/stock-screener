@@ -1,0 +1,41 @@
+name: Daily Stock Screener
+
+on:
+  schedule:
+    # 00:15 UTC 周二至周六 = 美东时间 周一至周五 晚上 8:15 (夏令时) / 7:15 (冬令时)
+    - cron: '15 0 * * 2-6'
+  workflow_dispatch:        # 允许在网页上手动点击运行
+
+jobs:
+  run-screener:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 运行筛选并发送邮件
+        env:
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          SENDER_EMAIL:       ${{ secrets.SENDER_EMAIL }}
+          RECIPIENT_EMAIL:    ${{ secrets.RECIPIENT_EMAIL }}
+        run: python daily_screener_email.py
+
+      - name: 保存 Excel 备份
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screener-result
+          path: '*.xlsx'
+          if-no-files-found: ignore
+          retention-days: 30
