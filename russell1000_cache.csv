@@ -1,0 +1,1023 @@
+ticker,name,fetched
+NVDA,Nvidia CORP,2026-08-11
+AAPL,Apple INC,2026-08-11
+MSFT,Microsoft,2026-08-11
+AMZN,Amazon.com INC,2026-08-11
+GOOGL,Alphabet Class A,2026-08-11
+AVGO,Broadcom INC,2026-08-11
+GOOG,Alphabet Class C,2026-08-11
+META,Meta Platforms Class A,2026-08-11
+MU,Micron Technology,2026-08-11
+TSLA,Tesla INC,2026-08-11
+LLY,Eli Lilly,2026-08-11
+JPM,Jpmorgan Chase & CO,2026-08-11
+BRK-B,Berkshire Hathaway INC Class B,2026-08-11
+AMD,Advanced Micro Devices,2026-08-11
+XOM,Exxonmobil Holdings CORP,2026-08-11
+JNJ,Johnson & Johnson,2026-08-11
+V,Visa Class A,2026-08-11
+WMT,Walmart INC,2026-08-11
+CSCO,Cisco Systems INC,2026-08-11
+MA,Mastercard Class A,2026-08-11
+ABBV,Abbvie,2026-08-11
+INTC,Intel Corporation,2026-08-11
+BAC,Bank OF America CORP,2026-08-11
+COST,Costco Wholesale CORP,2026-08-11
+AMAT,Applied Material INC,2026-08-11
+LRCX,Lam Research,2026-08-11
+PLTR,Palantir Technologies Class A,2026-08-11
+CAT,Caterpillar INC,2026-08-11
+GE,GE Aerospace,2026-08-11
+CVX,Chevron CORP,2026-08-11
+UNH,Unitedhealth Group INC,2026-08-11
+HD,Home Depot,2026-08-11
+PG,Procter & Gamble,2026-08-11
+KO,Coca-cola,2026-08-11
+MRK,Merck & CO INC,2026-08-11
+NFLX,Netflix,2026-08-11
+PANW,Palo Alto Networks,2026-08-11
+RTX,Rtx CORP,2026-08-11
+GS,Goldman Sachs Group INC,2026-08-11
+PM,Philip Morris International INC,2026-08-11
+GEV,GE Vernova INC,2026-08-11
+WFC,Wells Fargo,2026-08-11
+KLAC,Kla,2026-08-11
+TXN,Texas Instrument INC,2026-08-11
+ORCL,Oracle,2026-08-11
+MS,Morgan Stanley,2026-08-11
+C,Citigroup INC,2026-08-11
+LIN,Linde PLC,2026-08-11
+TMO,Thermo Fisher Scientific INC,2026-08-11
+IBM,International Business Machines CO,2026-08-11
+AMGN,Amgen INC,2026-08-11
+CRWD,Crowdstrike Holdings Class A,2026-08-11
+ANET,Arista Networks INC,2026-08-11
+APH,Amphenol CORP Class A,2026-08-11
+VZ,Verizon Communications INC,2026-08-11
+MCD,Mcdonalds CORP,2026-08-11
+ABT,Abbott Laboratories,2026-08-11
+PEP,Pepsico INC,2026-08-11
+ADI,Analog Devices,2026-08-11
+MRVL,Marvell Technology,2026-08-11
+SNDK,Sandisk,2026-08-11
+DIS,Walt Disney,2026-08-11
+AXP,American Express,2026-08-11
+NEE,Nextera Energy,2026-08-11
+ETN,Eaton PLC,2026-08-11
+BA,Boeing,2026-08-11
+SCHW,Charles Schwab,2026-08-11
+BLK,Blackrock,2026-08-11
+UNP,Union Pacific,2026-08-11
+TJX,Tjx,2026-08-11
+QCOM,Qualcomm,2026-08-11
+GILD,Gilead Sciences INC,2026-08-11
+T,At&t INC,2026-08-11
+BKNG,Booking Holdings,2026-08-11
+WELL,Welltower,2026-08-11
+CRM,Salesforce,2026-08-11
+UBER,Uber Technologies,2026-08-11
+COP,Conocophillips,2026-08-11
+DE,Deere,2026-08-11
+PFE,Pfizer,2026-08-11
+WDC,Western Digital CORP,2026-08-11
+ISRG,Intuitive Surgical INC,2026-08-11
+COF,Capital One Financial CORP,2026-08-11
+VRTX,Vertex Pharmaceuticals,2026-08-11
+PH,Parker-hannifin CORP,2026-08-11
+DELL,Dell Technologies INC Class C,2026-08-11
+PLD,Prologis REIT,2026-08-11
+DHR,Danaher CORP,2026-08-11
+NOW,Servicenow INC,2026-08-11
+BMY,Bristol Myers Squibb,2026-08-11
+GLW,Corning,2026-08-11
+NEM,Newmont,2026-08-11
+PGR,Progressive CORP,2026-08-11
+LOW,Lowes Companies INC,2026-08-11
+CB,Chubb,2026-08-11
+SBUX,Starbucks CORP,2026-08-11
+LMT,Lockheed Martin CORP,2026-08-11
+SPGI,S&p Global INC,2026-08-11
+SYK,Stryker,2026-08-11
+CVS,Cvs Health,2026-08-11
+MDT,Medtronic PLC,2026-08-11
+SNOW,Snowflake,2026-08-11
+HWM,Howmet Aerospace,2026-08-11
+ACN,Accenture PLC Class A,2026-08-11
+MCK,Mckesson CORP,2026-08-11
+BX,Blackstone,2026-08-11
+BNY,Bank OF New York Mellon CORP,2026-08-11
+MO,Altria Group INC,2026-08-11
+ADP,Automatic Data Processing INC,2026-08-11
+VRT,Vertiv Holdings Class A,2026-08-11
+TT,Trane Technologies PLC,2026-08-11
+ADBE,Adobe INC,2026-08-11
+SO,Southern,2026-08-11
+PNC,Pnc Financial Services Group,2026-08-11
+EQIX,Equinix REIT,2026-08-11
+GD,General Dynamics CORP,2026-08-11
+USB,US Bancorp,2026-08-11
+PWR,Quanta Services INC,2026-08-11
+MPC,Marathon Petroleum,2026-08-11
+FCX,Freeport Mcmoran INC,2026-08-11
+FTNT,Fortinet,2026-08-11
+NET,Cloudflare Class A,2026-08-11
+DUK,Duke Energy CORP,2026-08-11
+VLO,Valero Energy CORP,2026-08-11
+MMM,3M,2026-08-11
+JCI,Johnson Controls International PLC,2026-08-11
+CME,Cme Group Class A,2026-08-11
+CSX,Csx,2026-08-11
+EMR,Emerson Electric,2026-08-11
+MRSH,Marsh INC,2026-08-11
+INTU,Intuit,2026-08-11
+CMCSA,Comcast Class A,2026-08-11
+CDNS,Cadence Design Systems,2026-08-11
+PSX,Phillips 66,2026-08-11
+CEG,Constellation Energy CORP,2026-08-11
+WMB,Williams,2026-08-11
+CMI,Cummins INC,2026-08-11
+TMUS,T Mobile US INC,2026-08-11
+ICE,Intercontinental Exchange INC,2026-08-11
+ELV,Elevance Health INC,2026-08-11
+ITW,Illinois Tool INC,2026-08-11
+WM,Waste Management INC,2026-08-11
+SHW,Sherwin Williams,2026-08-11
+DDOG,Datadog INC Class A,2026-08-11
+REGN,Regeneron Pharmaceuticals,2026-08-11
+GM,General Motors,2026-08-11
+SLB,Slb NV,2026-08-11
+TRV,Travelers Companies,2026-08-11
+ROST,Ross Stores INC,2026-08-11
+SPOT,Spotify Technology,2026-08-11
+DASH,Doordash Class A,2026-08-11
+MDLZ,Mondelez International INC Class A,2026-08-11
+AMT,American Tower REIT,2026-08-11
+UPS,United Parcel Service INC Class B,2026-08-11
+RCL,Royal Caribbean Group,2026-08-11
+MSI,Motorola Solutions INC,2026-08-11
+NOC,Northrop Grumman CORP,2026-08-11
+ORLY,Oreilly Automotive INC,2026-08-11
+EOG,Eog Resources,2026-08-11
+APP,Applovin Class A,2026-08-11
+MAR,Marriott International Class A,2026-08-11
+SNPS,Synopsys,2026-08-11
+ABNB,Airbnb Class A,2026-08-11
+KKR,Kkr And CO INC,2026-08-11
+BSX,Boston Scientific CORP,2026-08-11
+NSC,Norfolk Southern CORP,2026-08-11
+AON,Aon PLC Class A,2026-08-11
+CL,Colgate-palmolive,2026-08-11
+HON,Honeywell International INC,2026-08-11
+HOOD,Robinhood Markets Class A,2026-08-11
+HPE,Hewlett Packard Enterprise,2026-08-11
+MCO,Moodys CORP,2026-08-11
+CI,Cigna,2026-08-11
+URI,United Rentals,2026-08-11
+ECL,Ecolab,2026-08-11
+FDX,Fedex CORP,2026-08-11
+SPCX,Space Exploration Technologies Cor,2026-08-11
+HLT,Hilton Worldwide Holdings INC,2026-08-11
+SPG,Simon Property Group REIT INC,2026-08-11
+CTAS,Cintas,2026-08-11
+TDG,Transdigm Group,2026-08-11
+TGT,Target CORP,2026-08-11
+DLR,Digital Realty Trust REIT,2026-08-11
+PCAR,Paccar INC,2026-08-11
+APD,Air Products And Chemicals,2026-08-11
+CRH,Crh Public Limited PLC,2026-08-11
+AEP,American Electric Power INC,2026-08-11
+ALL,Allstate CORP,2026-08-11
+MPWR,Monolithic Power Systems INC,2026-08-11
+TFC,Truist Financial,2026-08-11
+WBD,Warner Bros. Discovery Series A,2026-08-11
+AJG,Arthur J Gallagher,2026-08-11
+BKR,Baker Hughes Class A,2026-08-11
+MNST,Monster Beverage CORP,2026-08-11
+COR,Cencora,2026-08-11
+HCA,Hca Healthcare,2026-08-11
+KMI,Kinder Morgan,2026-08-11
+FAST,Fastenal,2026-08-11
+NUE,Nucor CORP,2026-08-11
+D,Dominion Energy INC,2026-08-11
+TER,Teradyne,2026-08-11
+APO,Apollo Global Management,2026-08-11
+DAL,Delta Air Lines,2026-08-11
+FIX,Comfort Systems USA,2026-08-11
+LITE,Lumentum Holdings,2026-08-11
+KEYS,Keysight Technologies,2026-08-11
+AME,Ametek INC,2026-08-11
+COHR,Coherent,2026-08-11
+OKE,Oneok,2026-08-11
+O,Realty Income REIT,2026-08-11
+GWW,WW Grainger INC,2026-08-11
+TRGP,Targa Resources,2026-08-11
+BE,Bloom Energy Class A,2026-08-11
+CAH,Cardinal Health,2026-08-11
+SRE,Sempra,2026-08-11
+LNG,Cheniere Energy INC,2026-08-11
+AFL,Aflac,2026-08-11
+PSA,Public Storage REIT,2026-08-11
+F,Ford Motor CO,2026-08-11
+CIEN,Ciena,2026-08-11
+EW,Edwards Lifesciences,2026-08-11
+LHX,L3harris Technologies,2026-08-11
+ADSK,Autodesk,2026-08-11
+PYPL,Paypal Holdings INC,2026-08-11
+HONA,Honeywell Aerospace INC,2026-08-11
+MET,Metlife,2026-08-11
+FITB,Fifth Third Bancorp,2026-08-11
+BDX,Becton Dickinson,2026-08-11
+CTVA,Corteva,2026-08-11
+DVN,Devon Energy,2026-08-11
+GRMN,Garmin,2026-08-11
+AMP,Ameriprise Finance INC,2026-08-11
+WAB,Westinghouse Air Brake Technologie,2026-08-11
+ROK,Rockwell Automation INC,2026-08-11
+STT,State Street,2026-08-11
+AZO,Autozone INC,2026-08-11
+CVNA,Carvana Class A,2026-08-11
+CARR,Carrier Global,2026-08-11
+AU,Anglogold Ashanti PLC,2026-08-11
+AXON,Axon Enterprise,2026-08-11
+NKE,Nike Class B,2026-08-11
+ETR,Entergy CORP,2026-08-11
+VST,Vistra,2026-08-11
+XEL,Xcel Energy INC,2026-08-11
+FERG,Ferguson Enterprises INC,2026-08-11
+ALAB,Astera Labs,2026-08-11
+NU,NU Holdings Class A,2026-08-11
+EBAY,Ebay,2026-08-11
+IDXX,Idexx Laboratories INC,2026-08-11
+TTWO,Take Two Interactive Software,2026-08-11
+EXC,Exelon CORP,2026-08-11
+FLEX,Flex LTD,2026-08-11
+HUM,Humana,2026-08-11
+MCHP,Microchip Technology INC,2026-08-11
+CBRE,Cbre Group Class A,2026-08-11
+RKLB,Rocket Lab CORP,2026-08-11
+OXY,Occidental Petroleum CORP,2026-08-11
+RSG,Republic Services INC,2026-08-11
+NTRA,Natera,2026-08-11
+PRU,Prudential Financial INC,2026-08-11
+NDAQ,Nasdaq INC,2026-08-11
+A,Agilent Technologies INC,2026-08-11
+VTR,Ventas REIT,2026-08-11
+AIG,American International Group,2026-08-11
+XYZ,Block Class A,2026-08-11
+CMG,Chipotle Mexican Grill,2026-08-11
+ROP,Roper Technologies,2026-08-11
+UAL,United Airlines Holdings,2026-08-11
+WAT,Waters CORP,2026-08-11
+CRDO,Credo Technology Group Holding LTD,2026-08-11
+IQV,Iqvia Holdings INC,2026-08-11
+SYY,Sysco,2026-08-11
+YUM,Yum Brands,2026-08-11
+ED,Consolidated Edison,2026-08-11
+MSCI,Msci INC,2026-08-11
+RVMD,Revolution Medicines,2026-08-11
+ODFL,Old Dominion Freight Line,2026-08-11
+IBKR,Interactive Brokers Group INC Clas,2026-08-11
+NTAP,Netapp INC,2026-08-11
+PAYX,Paychex,2026-08-11
+ADM,Archer Daniels Midland,2026-08-11
+FANG,Diamondback Energy,2026-08-11
+HIG,Hartford Insurance Group,2026-08-11
+PCG,Pg&e CORP,2026-08-11
+DHI,D R Horton INC,2026-08-11
+TWLO,Twilio Class A,2026-08-11
+KDP,Keurig DR Pepper INC,2026-08-11
+PEG,Public Service Enterprise Group IN,2026-08-11
+JBL,Jabil,2026-08-11
+VMC,Vulcan Materials,2026-08-11
+WDAY,Workday Class A,2026-08-11
+MTB,M&t Bank,2026-08-11
+EXPE,Expedia Group,2026-08-11
+IRM,Iron Mountain INC,2026-08-11
+KVUE,Kenvue,2026-08-11
+EME,Emcor Group INC,2026-08-11
+HBAN,Huntington Bancshares INC,2026-08-11
+KMB,Kimberly Clark,2026-08-11
+VEEV,Veeva Systems Class A,2026-08-11
+STLD,Steel Dynamics INC,2026-08-11
+CCL,Carnival CORP LTD,2026-08-11
+WEC,Wec Energy Group INC,2026-08-11
+NTRS,Northern Trust,2026-08-11
+P,Everpure INC Class A,2026-08-11
+DXCM,Dexcom INC,2026-08-11
+MDB,Mongodb Class A,2026-08-11
+ACGL,Arch Capital Group,2026-08-11
+IR,Ingersoll Rand INC,2026-08-11
+EQT,Eqt,2026-08-11
+MLM,Martin Marietta Materials,2026-08-11
+GEHC,GE Healthcare Technologies,2026-08-11
+SUNB,Sunbelt Rentals Holdings INC,2026-08-11
+RMD,Resmed,2026-08-11
+COIN,Coinbase Global INC Class A,2026-08-11
+TPR,Tapestry,2026-08-11
+CCI,Crown Castle INC,2026-08-11
+WTW,Willis Towers Watson,2026-08-11
+CNC,Centene CORP,2026-08-11
+ON,ON Semiconductor CORP,2026-08-11
+RJF,Raymond James,2026-08-11
+ZTS,Zoetis INC Class A,2026-08-11
+MSTR,Strategy INC Class A,2026-08-11
+CRWV,Coreweave Class A,2026-08-11
+TDY,Teledyne Technologies INC,2026-08-11
+KR,Kroger,2026-08-11
+ATI,Ati INC,2026-08-11
+CASY,Caseys General Stores INC,2026-08-11
+CFG,Citizens Financial Group INC,2026-08-11
+EXR,Extra Space Storage REIT,2026-08-11
+BIIB,Biogen,2026-08-11
+CBOE,Cboe Global Markets,2026-08-11
+AEE,Ameren,2026-08-11
+LPLA,Lpl Financial Holdings,2026-08-11
+FTI,Technipfmc PLC,2026-08-11
+WSM,Williams Sonoma INC,2026-08-11
+ALNY,Alnylam Pharmaceuticals,2026-08-11
+LYV,Live Nation Entertainment,2026-08-11
+ILMN,Illumina INC,2026-08-11
+XYL,Xylem INC,2026-08-11
+Q,Qnity Electronics,2026-08-11
+MTD,Mettler Toledo,2026-08-11
+DTE,Dte Energy,2026-08-11
+ZM,Zoom Communications Class A,2026-08-11
+INSM,Insmed INC,2026-08-11
+VICI,Vici Pptys INC,2026-08-11
+ARES,Ares Management Class A,2026-08-11
+HAL,Halliburton,2026-08-11
+OTIS,Otis Worldwide,2026-08-11
+FISV,Fiserv INC,2026-08-11
+ATO,Atmos Energy,2026-08-11
+CTSH,Cognizant Technology Solutions Cla,2026-08-11
+DOV,Dover CORP,2026-08-11
+HUBB,Hubbell INC,2026-08-11
+ES,Eversource Energy,2026-08-11
+RF,Regions Financial,2026-08-11
+NVT,Nvent Electric PLC,2026-08-11
+EIX,Edison International,2026-08-11
+HSY,Hershey Foods,2026-08-11
+DG,Dollar General CORP,2026-08-11
+AWK,American Water Works,2026-08-11
+PPL,Ppl CORP,2026-08-11
+CNP,Centerpoint Energy,2026-08-11
+HPQ,HP INC,2026-08-11
+LH,Labcorp Holdings,2026-08-11
+CINF,Cincinnati Financial,2026-08-11
+SYF,Synchrony Financial,2026-08-11
+DGX,Quest Diagnostics INC,2026-08-11
+CW,Curtiss Wright,2026-08-11
+FE,Firstenergy CORP,2026-08-11
+CPRT,Copart INC,2026-08-11
+CRS,Carpenter Technology,2026-08-11
+SW,Smurfit Westrock PLC,2026-08-11
+PPG,Ppg Industries,2026-08-11
+CPAY,Corpay,2026-08-11
+TEAM,Atlassian CORP Class A,2026-08-11
+OKTA,Okta Class A,2026-08-11
+QSR,Restaurants Brands International,2026-08-11
+AVB,Avalonbay Communities REIT,2026-08-11
+DRI,Darden Restaurants INC,2026-08-11
+PHM,Pultegroup,2026-08-11
+WST,West Pharmaceutical Services,2026-08-11
+FSLR,First Solar,2026-08-11
+NRG,Nrg Energy INC,2026-08-11
+OMC,Omnicom Group INC,2026-08-11
+CHD,Church And Dwight INC,2026-08-11
+EQR,Equity Residential REIT,2026-08-11
+USFD,US Foods Holding,2026-08-11
+PFG,Principal Financial Group INC,2026-08-11
+VLTO,Veralto CORP,2026-08-11
+TROW,T Rowe Price Group,2026-08-11
+RPRX,Royalty Pharma PLC Class A,2026-08-11
+DLTR,Dollar Tree INC,2026-08-11
+VRSK,Verisk Analytics,2026-08-11
+FFIV,F5 INC,2026-08-11
+ULTA,Ulta Beauty INC,2026-08-11
+EXPD,Expeditors International OF Washin,2026-08-11
+VRSN,Verisign,2026-08-11
+STE,Steris,2026-08-11
+FICO,Fair Isaac,2026-08-11
+XPO,Xpo INC,2026-08-11
+RBLX,Roblox CORP Class A,2026-08-11
+MKL,Markel Group,2026-08-11
+FTAI,Ftai Aviation,2026-08-11
+SOFI,Sofi Technologies,2026-08-11
+ENTG,Entegris INC,2026-08-11
+EXE,Expand Energy,2026-08-11
+BURL,Burlington Stores,2026-08-11
+DOW,Dow,2026-08-11
+FIS,Fidelity National Information Serv,2026-08-11
+PKG,Packaging CORP OF America,2026-08-11
+FWONK,Liberty Media Formula One Series C,2026-08-11
+THC,Tenet Healthcare CORP,2026-08-11
+IP,International Paper,2026-08-11
+MRNA,Moderna INC,2026-08-11
+IFF,International Flavors & Fragrances,2026-08-11
+EL,Estee Lauder INC Class A,2026-08-11
+AMCR,Amcor PLC,2026-08-11
+EFX,Equifax,2026-08-11
+RS,Reliance Steel & Aluminum,2026-08-11
+AFRM,Affirm Holdings Class A,2026-08-11
+WWD,Woodward,2026-08-11
+UTHR,United Therapeutics,2026-08-11
+CMS,Cms Energy,2026-08-11
+BAM,Brookfield Asset Management Voting,2026-08-11
+TPL,Texas Pacific Land,2026-08-11
+KEY,Keycorp,2026-08-11
+KHC,Kraft Heinz,2026-08-11
+LUV,Southwest Airlines,2026-08-11
+GH,Guardant Health,2026-08-11
+RDDT,Reddit Class A,2026-08-11
+SNA,Snap ON INC,2026-08-11
+BRO,Brown & Brown INC,2026-08-11
+CPNG,Coupang Class A,2026-08-11
+GIS,General Mills INC,2026-08-11
+NI,Nisource,2026-08-11
+INCY,Incyte CORP,2026-08-11
+MTSI,Macom Technology Solutions,2026-08-11
+JBHT,JB Hunt Transport Services INC,2026-08-11
+HEIA,Heico Class A,2026-08-11
+RGLD,Royal Gold,2026-08-11
+GPN,Global Payments INC,2026-08-11
+MKSI,Mks,2026-08-11
+DD,Dupont DE Nemours,2026-08-11
+BR,Broadridge Financial Solutions INC,2026-08-11
+SNX,TD Synnex,2026-08-11
+ROKU,Roku Class A,2026-08-11
+ITT,Itt INC,2026-08-11
+VTRS,Viatris,2026-08-11
+SBAC,Sba Communications REIT CORP Class,2026-08-11
+CDE,Coeur Mining,2026-08-11
+EVRG,Evergy,2026-08-11
+L,Loews,2026-08-11
+ZBH,Zimmer Biomet Holdings,2026-08-11
+FN,Fabrinet,2026-08-11
+GPC,Genuine Parts,2026-08-11
+FTV,Fortive,2026-08-11
+ZS,Zscaler,2026-08-11
+STZ,Constellation Brands Class A,2026-08-11
+TSCO,Tractor Supply,2026-08-11
+ZBRA,Zebra Technologies CORP Class A,2026-08-11
+ASTS,Ast Spacemobile Class A,2026-08-11
+EWBC,East West Bancorp,2026-08-11
+PTC,Ptc,2026-08-11
+ESS,Essex Property Trust REIT,2026-08-11
+SCCO,Southern Copper CORP,2026-08-11
+LEN,Lennar A CORP Class A,2026-08-11
+FCNCA,First Citizens Bancshares INC Clas,2026-08-11
+CF,CF Industries Holdings INC,2026-08-11
+WCC,Wesco International,2026-08-11
+WY,Weyerhaeuser REIT,2026-08-11
+OVV,Ovintiv,2026-08-11
+VIK,Viking Holdings LTD,2026-08-11
+LNT,Alliant Energy CORP,2026-08-11
+INVH,Invitation Homes,2026-08-11
+SMCI,Super Micro Computer INC,2026-08-11
+IEX,Idex,2026-08-11
+LDOS,Leidos Holdings,2026-08-11
+LSCC,Lattice Semiconductor,2026-08-11
+CDW,Cdw,2026-08-11
+ROIV,Roivant Sciences LTD,2026-08-11
+CHRW,CH Robinson Worldwide,2026-08-11
+RBC,Rbc Bearings,2026-08-11
+J,Jacobs Solutions INC,2026-08-11
+PFGC,Performance Food Group,2026-08-11
+NLY,Annaly Capital Management REIT INC,2026-08-11
+MTZ,Mastec INC,2026-08-11
+PR,Permian Resources Class A,2026-08-11
+NVR,Nvr,2026-08-11
+AKAM,Akamai Technologies INC,2026-08-11
+IONQ,Ionq,2026-08-11
+BALL,Ball CORP,2026-08-11
+JLL,Jones Lang Lasalle,2026-08-11
+TOST,Toast Class A,2026-08-11
+RBA,RB Global,2026-08-11
+NTNX,Nutanix Class A,2026-08-11
+SSNC,SS And C Technologies Holdings,2026-08-11
+NDSN,Nordson,2026-08-11
+LYB,Lyondellbasell Industries Class A,2026-08-11
+APG,Api Group,2026-08-11
+TLN,Talen Energy CORP,2026-08-11
+SWK,Stanley Black & Decker INC,2026-08-11
+RGA,Reinsurance Group OF America,2026-08-11
+BBY,Best Buy,2026-08-11
+NBIX,Neurocrine Biosciences,2026-08-11
+STRL,Sterling Infrastructure,2026-08-11
+ARMK,Aramark,2026-08-11
+KIM,Kimco Realty REIT CORP,2026-08-11
+WRB,WR Berkley,2026-08-11
+GEN,Gen Digital,2026-08-11
+U,Unity Software,2026-08-11
+CLH,Clean Harbors INC,2026-08-11
+ONTO,Onto Innovation,2026-08-11
+MDLN,Medline Class A,2026-08-11
+TRU,Transunion,2026-08-11
+CSL,Carlisle Companies,2026-08-11
+SN,Sharkninja,2026-08-11
+HEI,Heico,2026-08-11
+PNFP,Pinnacle Financial Partners INC,2026-08-11
+NXT,Nextpower INC Class A,2026-08-11
+TSN,Tyson Foods INC Class A,2026-08-11
+BWXT,Bwx Technologies INC,2026-08-11
+WPC,W. P. Carey REIT INC,2026-08-11
+MAS,Masco,2026-08-11
+HST,Host Hotels & Resorts REIT,2026-08-11
+ALB,Albemarle CORP,2026-08-11
+TXT,Textron INC,2026-08-11
+MAA,Mid America Apartment Communities,2026-08-11
+FDXF,Fedex Freight Holding Company INC,2026-08-11
+LECO,Lincoln Electric Holdings INC,2026-08-11
+RBRK,Rubrik Class A,2026-08-11
+GWRE,Guidewire Software,2026-08-11
+COO,Cooper,2026-08-11
+BG,Bunge Global SA,2026-08-11
+MLI,Mueller Industries INC,2026-08-11
+RPM,Rpm International INC,2026-08-11
+RL,Ralph Lauren Class A,2026-08-11
+SITM,Sitime,2026-08-11
+DT,Dynatrace INC,2026-08-11
+JAZZ,Jazz Pharmaceuticals PLC,2026-08-11
+CACI,Caci International INC Class A,2026-08-11
+QXO,Qxo INC,2026-08-11
+SUI,Sun Communities REIT INC,2026-08-11
+RIVN,Rivian Automotive INC Class A,2026-08-11
+EQH,Equitable Holdings INC,2026-08-11
+EG,Everest Group LTD,2026-08-11
+ALLE,Allegion PLC,2026-08-11
+TOL,Toll Brothers INC,2026-08-11
+APA,Apa,2026-08-11
+DOC,Healthpeak Properties,2026-08-11
+BWA,Borgwarner,2026-08-11
+AIZ,Assurant INC,2026-08-11
+UNM,Unum,2026-08-11
+BAX,Baxter International,2026-08-11
+BBIO,Bridgebio Pharma,2026-08-11
+AA,Alcoa CORP,2026-08-11
+GL,Globe Life,2026-08-11
+AVY,Avery Dennison CORP,2026-08-11
+TXRH,Texas Roadhouse INC,2026-08-11
+FLUT,Flutter Entertainment PLC,2026-08-11
+MEDP,Medpace Holdings,2026-08-11
+GGG,Graco,2026-08-11
+IOT,Samsara Class A,2026-08-11
+CRL,Charles River Laboratories Interna,2026-08-11
+LII,Lennox International INC,2026-08-11
+REG,Regency Centers REIT CORP,2026-08-11
+DTM,DT Midstream INC,2026-08-11
+HAS,Hasbro,2026-08-11
+OHI,Omega Healthcare Investors REIT,2026-08-11
+TYL,Tyler Technologies,2026-08-11
+RKT,Rocket Companies INC Class A,2026-08-11
+MKC,Mccormick & CO Non-voting,2026-08-11
+TRMB,Trimble INC,2026-08-11
+CCK,Crown Holdings INC,2026-08-11
+RNR,Renaissancere Holding,2026-08-11
+TTMI,Ttm Technologies INC,2026-08-11
+SGI,Somnigroup International,2026-08-11
+DINO,HF Sinclair,2026-08-11
+DECK,Deckers Outdoor,2026-08-11
+BMRN,Biomarin Pharmaceutical,2026-08-11
+LAMR,Lamar Advertising Company Clas,2026-08-11
+DKS,Dicks Sporting,2026-08-11
+CLX,Clorox,2026-08-11
+AIT,Applied Industrial Technologies IN,2026-08-11
+RVTY,Revvity,2026-08-11
+FIVE,Five Below,2026-08-11
+HII,Huntington Ingalls Industries,2026-08-11
+IREN,Iren,2026-08-11
+EXEL,Exelixis INC,2026-08-11
+CRCL,Circle Internet Group Class A,2026-08-11
+CG,Carlyle Group INC,2026-08-11
+WBS,Webster Financial,2026-08-11
+ASND,Ascendis Pharma,2026-08-11
+OC,Owens Corning,2026-08-11
+SF,Stifel Financial,2026-08-11
+LVS,Las Vegas Sands,2026-08-11
+CSGP,Costar Group,2026-08-11
+LULU,Lululemon Athletica,2026-08-11
+GNRC,Generac Holdings,2026-08-11
+SOLV,Solventum,2026-08-11
+EHC,Encompass Health CORP,2026-08-11
+AEIS,Advanced Energy Industries,2026-08-11
+PEN,Penumbra,2026-08-11
+CHTR,Charter Communications Class A,2026-08-11
+FOXA,Fox Class A,2026-08-11
+TW,Tradeweb Markets INC Class A,2026-08-11
+FNF,Fidelity National Financial INC,2026-08-11
+ALLY,Ally Financial INC,2026-08-11
+ELS,Equity Lifestyle Properties REIT I,2026-08-11
+DKNG,Draftkings Class A,2026-08-11
+IT,Gartner,2026-08-11
+SMTC,Semtech,2026-08-11
+AGNC,Agnc Investment REIT,2026-08-11
+SJM,JM Smucker,2026-08-11
+BJ,Bjs Wholesale Club Holdings,2026-08-11
+ECHO,Echostar Class A,2026-08-11
+TKO,Tko Group Holdings INC Class A,2026-08-11
+ARWR,Arrowhead Pharmaceuticals,2026-08-11
+UDR,Udr REIT,2026-08-11
+FHN,First Horizon CORP,2026-08-11
+HALO,Halozyme Therapeutics,2026-08-11
+PNW,Pinnacle West,2026-08-11
+DY,Dycom Industries INC,2026-08-11
+GDDY,Godaddy Class A,2026-08-11
+KTOS,Kratos Defense And Security Soluti,2026-08-11
+MANH,Manhattan Associates,2026-08-11
+GLPI,Gaming And Leisure Properties REIT,2026-08-11
+PINS,Pinterest Class A,2026-08-11
+AMH,American Homes Rent REIT Class A,2026-08-11
+ALGN,Align Technology,2026-08-11
+TECH,Bio Techne,2026-08-11
+RRX,Regal Rexnord,2026-08-11
+DOCU,Docusign,2026-08-11
+WTRG,Essential Utilities INC,2026-08-11
+JKHY,Jack Henry And Associates INC,2026-08-11
+BPOP,Popular INC,2026-08-11
+DCI,Donaldson,2026-08-11
+HUBS,Hubspot,2026-08-11
+HL,Hecla Mining,2026-08-11
+IVZ,Invesco LTD,2026-08-11
+ROL,Rollins INC,2026-08-11
+SCI,Service,2026-08-11
+ELAN,Elanco Animal Health,2026-08-11
+WSO,Watsco,2026-08-11
+AYI,Acuity,2026-08-11
+EVR,Evercore Class A,2026-08-11
+AR,Antero Resources,2026-08-11
+LFUS,Littelfuse,2026-08-11
+WTFC,Wintrust Financial CORP,2026-08-11
+CR,Crane,2026-08-11
+SEIC,Sei Investments,2026-08-11
+GFL,Gfl Environmental Subordinate Voti,2026-08-11
+W,Wayfair Class A,2026-08-11
+PNR,Pentair,2026-08-11
+SSB,Southstate Bank CORP,2026-08-11
+KNX,Knight-swift Transportation Holdin,2026-08-11
+CPT,Camden Property Trust REIT,2026-08-11
+DPZ,Dominos Pizza,2026-08-11
+BXP,Bxp,2026-08-11
+NWSA,News Class A,2026-08-11
+EGP,Eastgroup Properties REIT,2026-08-11
+CORT,Corcept Therapeutics,2026-08-11
+SPXC,Spx Technologies INC,2026-08-11
+ARW,Arrow Electronics,2026-08-11
+APTV,Aptiv PLC,2026-08-11
+ALSN,Allison Transmission Holdings,2026-08-11
+CGNX,Cognex,2026-08-11
+WTS,Watts Water Technologies Class A,2026-08-11
+ZION,Zions Bancorporation,2026-08-11
+AES,Aes,2026-08-11
+COKE,Coca Cola Consolidated INC,2026-08-11
+AAOI,Applied Optoelectronics,2026-08-11
+RMBS,Rambus,2026-08-11
+FLS,Flowserve,2026-08-11
+MOD,Modine Manufacturing,2026-08-11
+SANM,Sanmina CORP,2026-08-11
+FDS,Factset Research Systems,2026-08-11
+PODD,Insulet,2026-08-11
+BMNR,Bitmine Immersion Technologies,2026-08-11
+AAL,American Airlines Group,2026-08-11
+ENSG,Ensign Group,2026-08-11
+SWKS,Skyworks Solutions,2026-08-11
+WMS,Advanced Drainage Systems INC,2026-08-11
+AHR,American Healthcare REIT,2026-08-11
+FRT,Federal Realty Investment Trust RE,2026-08-11
+MOH,Molina Healthcare INC,2026-08-11
+DAR,Darling Ingredients,2026-08-11
+NYT,New York Times Class A,2026-08-11
+CFR,Cullen Frost Bankers INC,2026-08-11
+DOCN,Digitalocean Holdings,2026-08-11
+SOLS,Solstice Advanced Materials INC,2026-08-11
+PRI,Primerica,2026-08-11
+ORI,Old Republic International,2026-08-11
+OSK,Oshkosh CORP,2026-08-11
+R,Ryder System,2026-08-11
+RRC,Range Resources,2026-08-11
+GMED,Globus Medical Class A,2026-08-11
+MDGL,Madrigal Pharmaceuticals,2026-08-11
+AFG,American Financial Group,2026-08-11
+BAH,Booz Allen Hamilton Holding Class,2026-08-11
+OGE,Oge Energy,2026-08-11
+TTC,Toro,2026-08-11
+SAIA,Saia INC,2026-08-11
+TTEK,Tetra Tech INC,2026-08-11
+FORM,Formfactor INC,2026-08-11
+CNH,Cnh Industrial N.v. NV,2026-08-11
+MUSA,Murphy USA,2026-08-11
+VMI,Valmont Inds,2026-08-11
+AXSM,Axsome Therapeutics,2026-08-11
+BRX,Brixmor Property Group REIT INC,2026-08-11
+CUBE,Cubesmart REIT,2026-08-11
+AMG,Affiliated Managers Group,2026-08-11
+AVTR,Avantor,2026-08-11
+IONS,Ionis Pharmaceuticals,2026-08-11
+COLB,Columbia Banking System INC,2026-08-11
+VOYA,Voya Financial,2026-08-11
+BEN,Franklin Resources INC,2026-08-11
+UHS,Universal Health Services INC Clas,2026-08-11
+VIAV,Viavi Solutions,2026-08-11
+QGEN,Qiagen,2026-08-11
+HSIC,Henry Schein,2026-08-11
+WAL,Western Alliance,2026-08-11
+MTCH,Match Group INC,2026-08-11
+RGEN,Repligen,2026-08-11
+PAYC,Paycom Software,2026-08-11
+CNM,Core & Main INC Class A,2026-08-11
+EMN,Eastman Chemical,2026-08-11
+ACM,Aecom,2026-08-11
+TIGO,Millicom International Cellular,2026-08-11
+ESI,Element Solutions INC,2026-08-11
+ATR,Aptargroup,2026-08-11
+PB,Prosperity Bancshares,2026-08-11
+LAD,Lithia Motors INC Class A,2026-08-11
+NNN,Nnn REIT,2026-08-11
+JEF,Jefferies Financial Group INC,2026-08-11
+ADC,Agree Realty REIT,2026-08-11
+NCLH,Norwegian Cruise Line Holdings,2026-08-11
+KMX,Carmax INC,2026-08-11
+ARE,Alexandria Real Estate Equities RE,2026-08-11
+QRVO,Qorvo,2026-08-11
+KNSL,Kinsale Capital Group INC,2026-08-11
+CHYM,Chime Financial Class A,2026-08-11
+CRBG,Corebridge Financial INC,2026-08-11
+MGM,Mgm Resorts International,2026-08-11
+RAL,Ralliant,2026-08-11
+AUR,Aurora Innovation Class A,2026-08-11
+SSD,Simpson Manufacturing,2026-08-11
+AXTA,Axalta Coating Systems,2026-08-11
+REXR,Rexford Industrial Realty REIT,2026-08-11
+OWL,Blue Owl Capital Class A,2026-08-11
+AWI,Armstrong World Industries,2026-08-11
+VNOM,Viper Energy INC Class A,2026-08-11
+WYNN,Wynn Resorts,2026-08-11
+FR,First Industrial Realty Trust,2026-08-11
+TKR,Timken,2026-08-11
+LNC,Lincoln National CORP,2026-08-11
+MP,MP Materials CORP Class A,2026-08-11
+SFM,Sprouts Farmers Market INC,2026-08-11
+BLDR,Builders Firstsource INC,2026-08-11
+CBSH,Commerce Bancshares,2026-08-11
+NFG,National Fuel Gas,2026-08-11
+AVT,Avnet INC,2026-08-11
+CHRD,Chord Energy,2026-08-11
+UGI,Ugi,2026-08-11
+GME,Gamestop Class A,2026-08-11
+THG,Hanover Insurance Group,2026-08-11
+FOX,Fox Class B,2026-08-11
+CART,Maplebear,2026-08-11
+APLD,Applied Digital CORP,2026-08-11
+AM,Antero Midstream,2026-08-11
+IDA,Idacorp,2026-08-11
+HXL,Hexcel,2026-08-11
+AXS,Axis Capital Holdings,2026-08-11
+NOV,Nov INC,2026-08-11
+AVAV,Aerovironment INC,2026-08-11
+OMF,Onemain Holdings,2026-08-11
+MOS,Mosaic,2026-08-11
+PCOR,Procore Technologies INC,2026-08-11
+AOS,A O Smith,2026-08-11
+ETSY,Etsy,2026-08-11
+TPG,Tpg INC Class A,2026-08-11
+GTES,Gates Industrial PLC,2026-08-11
+S,Sentinelone INC Class A,2026-08-11
+LW,Lamb Weston Holdings,2026-08-11
+CAG,Conagra Brands,2026-08-11
+HRL,Hormel Foods CORP,2026-08-11
+KEX,Kirby CORP,2026-08-11
+ECG,Everus Construction Group,2026-08-11
+CLF,Cleveland Cliffs INC,2026-08-11
+FAF,First American Financial CORP,2026-08-11
+CHE,Chemed CORP,2026-08-11
+VNO,Vornado Realty Trust REIT,2026-08-11
+MSA,Msa Safety,2026-08-11
+WFRD,Weatherford International PLC,2026-08-11
+STAG,Stag Industrial REIT,2026-08-11
+WEX,Wex,2026-08-11
+HLI,Houlihan Lokey INC Class A,2026-08-11
+H,Hyatt Hotels CORP Class A,2026-08-11
+ONON,ON Holding AG Class A,2026-08-11
+AMKR,Amkor Technology,2026-08-11
+MHK,Mohawk Industries,2026-08-11
+IESC,Ies INC,2026-08-11
+EXP,Eagle Materials INC,2026-08-11
+ESTC,Elastic,2026-08-11
+INGR,Ingredion INC,2026-08-11
+POOL,Pool,2026-08-11
+M,Macys INC,2026-08-11
+FNB,Fnb CORP,2026-08-11
+PL,Planet Labs Class A,2026-08-11
+OKLO,Oklo Class A,2026-08-11
+LYFT,Lyft Class A,2026-08-11
+ST,Sensata Technologies Holding PLC,2026-08-11
+SARO,Standardaero,2026-08-11
+LKQ,Lkq CORP,2026-08-11
+UHAL-B,U Haul Non Voting Series N,2026-08-11
+BIO,Bio Rad Laboratories Class A,2026-08-11
+RYN,Rayonier REIT,2026-08-11
+FND,Floor Decor Holdings Class A,2026-08-11
+TAP,Molson Coors Brewing Class B,2026-08-11
+PCTY,Paylocity Holding CORP,2026-08-11
+XP,XP Class A INC,2026-08-11
+MSGS,Madison Square Garden Sports Class,2026-08-11
+BRKR,Bruker,2026-08-11
+PATH,Uipath INC Class A,2026-08-11
+HR,Healthcare Realty Trust INC Class,2026-08-11
+CROX,Crocs,2026-08-11
+MTG,Mgic Investment,2026-08-11
+GFS,Globalfoundries,2026-08-11
+CRUS,Cirrus Logic,2026-08-11
+FPS,Forgent Power Solutions Class A,2026-08-11
+HRB,H&r Block INC,2026-08-11
+MTDR,Matador Resources,2026-08-11
+AS,Amer Sports INC,2026-08-11
+CZR,Caesars Entertainment INC,2026-08-11
+LEA,Lear,2026-08-11
+CAVA,Cava Group,2026-08-11
+DOX,Amdocs,2026-08-11
+AGCO,Agco,2026-08-11
+WULF,Terawulf,2026-08-11
+GTLB,Gitlab Class A,2026-08-11
+POWL,Powell Industries INC,2026-08-11
+LSTR,Landstar System,2026-08-11
+TEM,Tempus AI INC Class A,2026-08-11
+TFX,Teleflex,2026-08-11
+ULS,UL Solutions INC Class A,2026-08-11
+AAON,Aaon INC,2026-08-11
+SON,Sonoco Products,2026-08-11
+BROS,Dutch Bros Class A,2026-08-11
+FBIN,Fortune Brands Innovations INC,2026-08-11
+CHDN,Churchill Downs,2026-08-11
+MKTX,Marketaxess Holdings,2026-08-11
+MBGL,Mobility Global INC,2026-08-11
+DVA,Davita INC,2026-08-11
+PRMB,Primo Brands Class A CORP,2026-08-11
+STWD,Starwood Property Trust REIT INC,2026-08-11
+BSY,Bentley Systems INC Class B,2026-08-11
+RITM,Rithm Capital CORP,2026-08-11
+TTD,Trade Desk INC Class A,2026-08-11
+ENPH,Enphase Energy,2026-08-11
+Z,Zillow Group Class C,2026-08-11
+ALK,Alaska Air Group INC,2026-08-11
+G,Genpact,2026-08-11
+ELF,Elf Beauty,2026-08-11
+GXO,Gxo Logistics,2026-08-11
+RLI,Rli CORP,2026-08-11
+NEU,Newmarket,2026-08-11
+OZK,Bank Ozk,2026-08-11
+VSNT,Versant Media Group INC Class A,2026-08-11
+SHC,Sotera Health Company,2026-08-11
+MTN,Vail Resorts,2026-08-11
+FIG,Figma Class A,2026-08-11
+SAIC,Science Applications International,2026-08-11
+ALGM,Allegro Microsystems INC,2026-08-11
+VFC,VF CORP,2026-08-11
+MSM,Msc Industrial Class A,2026-08-11
+CHWY,Chewy INC Class A,2026-08-11
+BC,Brunswick CORP,2026-08-11
+WH,Wyndham Hotels Resorts,2026-08-11
+NXST,Nexstar Media Group INC,2026-08-11
+VICR,Vicor,2026-08-11
+MIDD,Middleby,2026-08-11
+DBX,Dropbox INC Class A,2026-08-11
+DUOL,Duolingo Class A,2026-08-11
+SLM,Slm CORP,2026-08-11
+AN,Autonation,2026-08-11
+TREX,Trex,2026-08-11
+GNTX,Gentex,2026-08-11
+EPAM,Epam Systems,2026-08-11
+EXLS,Exlservice Holdings,2026-08-11
+WTM,White Mountains Insurance Group,2026-08-11
+VNT,Vontier,2026-08-11
+SIRI,Siriusxm Holdings,2026-08-11
+ESAB,Esab CORP,2026-08-11
+KBR,Kbr INC,2026-08-11
+CE,Celanese CORP,2026-08-11
+CUZ,Cousins Properties REIT INC,2026-08-11
+LPX,Louisiana Pacific,2026-08-11
+GAP,Gap,2026-08-11
+LLYVK,Liberty Live Holdings INC Series C,2026-08-11
+RNG,Ringcentral INC Class A,2026-08-11
+NVST,Envista Holdings CORP,2026-08-11
+OLLI,Ollies Bargain Outlet Holdings INC,2026-08-11
+JHX,James Hardie Industries PLC,2026-08-11
+IRDM,Iridium Communications,2026-08-11
+VIRT,Virtu Financial INC Class A,2026-08-11
+BEPC,Brookfield Renewable Subordinate V,2026-08-11
+CELH,Celsius Holdings,2026-08-11
+MRP,Millrose Properties INC Class A,2026-08-11
+SITE,Siteone Landscape Supply INC,2026-08-11
+APPF,Appfolio Class A,2026-08-11
+CPB,Campbell Soup,2026-08-11
+EPR,Epr Properties REIT,2026-08-11
+FCN,Fti Consulting INC,2026-08-11
+PRIM,Primoris Services,2026-08-11
+RHI,Robert Half,2026-08-11
+RYAN,Ryan Specialty Holdings INC Class,2026-08-11
+MAT,Mattel INC,2026-08-11
+VVV,Valvoline INC,2026-08-11
+GSAT,Globalstar Voting,2026-08-11
+TNL,Travel Leisure,2026-08-11
+MDU,Mdu Resources Group,2026-08-11
+HLNE,Hamilton Lane Class A,2026-08-11
+THO,Thor Industries,2026-08-11
+JBS,Jbs N V NV Class A,2026-08-11
+KRMN,Karman Holdings INC,2026-08-11
+KRC,Kilroy Realty REIT,2026-08-11
+BYD,Boyd Gaming,2026-08-11
+ADT,Adt INC,2026-08-11
+NWS,News Class B,2026-08-11
+COLD,Americold Realty INC Trust,2026-08-11
+OLED,Universal Display CORP,2026-08-11
+CCC,Ccc Intelligent Solutions Holdings,2026-08-11
+LBRDK,Liberty Broadband CORP Series C,2026-08-11
+PVH,Pvh,2026-08-11
+CWEN,Clearway Energy INC Class C,2026-08-11
+ACI,Albertsons Company Class A,2026-08-11
+LAZ,Lazard,2026-08-11
+WSC,Willscot Holdings Class A,2026-08-11
+LOPE,Grand Canyon Education INC,2026-08-11
+BILL,Bill Holdings,2026-08-11
+YETI,Yeti Holdings,2026-08-11
+FIGR,Figure Technology Solutions Class,2026-08-11
+PAG,Penske Automotive Group Voting INC,2026-08-11
+DLB,Dolby Laboratories Class A,2026-08-11
+MORN,Morningstar,2026-08-11
+BBWI,Bath And Body Works,2026-08-11
+BF-B,Brown Forman Class B,2026-08-11
+GLXY,Galaxy Digital INC Class A,2026-08-11
+BFAM,Bright Horizons Family Solutions I,2026-08-11
+PLNT,Planet Fitness INC Class A,2026-08-11
+OGN,Organon,2026-08-11
+GPK,Graphic Packaging Holding,2026-08-11
+VKTX,Viking Therapeutics INC,2026-08-11
+SLGN,Silgan Holdings,2026-08-11
+FHB,First Hawaiian,2026-08-11
+AMTM,Amentum Holdings,2026-08-11
+BHF,Brighthouse Financial,2026-08-11
+DOCS,Doximity Class A,2026-08-11
+DRS,Leonardo Drs INC,2026-08-11
+FRPT,Freshpet,2026-08-11
+POST,Post Holdings,2026-08-11
+QS,Quantumscape Class A,2026-08-11
+AGO,Assured Guaranty LTD,2026-08-11
+LOAR,Loar Holdings,2026-08-11
+WING,Wingstop,2026-08-11
+HAYW,Hayward Holdings,2026-08-11
+AUGO,Aura Minerals INC,2026-08-11
+KD,Kyndryl Holdings,2026-08-11
+LINE,Lineage,2026-08-11
+ALM,Almonty Industries,2026-08-11
+CAI,Caris Life Sciences,2026-08-11
+PEGA,Pegasystems,2026-08-11
+EEFT,Euronet Worldwide INC,2026-08-11
+SMG,Scotts Miracle Gro,2026-08-11
+BOKF,Bok Financial CORP,2026-08-11
+CHH,Choice Hotels International,2026-08-11
+FRHC,Freedom Holding CORP,2026-08-11
+WLK,Westlake CORP,2026-08-11
+KVYO,Klaviyo Series A,2026-08-11
+PPLI,People,2026-08-11
+CAR,Avis Budget Group INC,2026-08-11
+UI,Ubiquiti,2026-08-11
+FWONA,Liberty Media Formula One Series A,2026-08-11
+WHR,Whirlpool,2026-08-11
+FOUR,Shift4 Payments Class A,2026-08-11
+HHH,Howard Hughes Holdings INC,2026-08-11
+OLN,Olin CORP,2026-08-11
+CACC,Credit Acceptance CORP,2026-08-11
+IPGP,Ipg Photonics CORP,2026-08-11
+MPT,Medical Properties Trust REIT INC,2026-08-11
+DDS,Dillards INC Class A,2026-08-11
+WU,Western Union,2026-08-11
+LLYVA,Liberty Live Holdings INC Series A,2026-08-11
+MFP,Midera Food Processing INC,2026-08-11
+PSN,Parsons CORP,2026-08-11
+SMMT,Summit Therapeutics,2026-08-11
+LBTYA,Liberty Global LTD Class A,2026-08-11
+SNDR,Schneider National Class B,2026-08-11
+ZG,Zillow Group Class A,2026-08-11
+BIRK,Birkenstock Holding PLC,2026-08-11
+FRMI,Fermi INC,2026-08-11
+REYN,Reynolds Consumer Products INC,2026-08-11
+BFA,Brown Forman Class A,2026-08-11
+LBTYK,Liberty Global LTD Class C,2026-08-11
+JAN,Janus Living INC Class A,2026-08-11
+CNA,Cna Financial CORP,2026-08-11
+INGM,Ingram Micro Holding,2026-08-11
+SEB,Seaboard,2026-08-11
+MWH,Solv Energy Class A INC,2026-08-11
+COLM,Columbia Sportswear,2026-08-11
+SAIL,Sailpoint,2026-08-11
+SFD,Smithfield Foods INC,2026-08-11
+PPC,Pilgrims Pride CORP,2026-08-11
+TFSL,Tfs Financial CORP,2026-08-11
+XE,X-energy INC Class A,2026-08-11
+BLSH,Bullish,2026-08-11
+NIQ,Niq Global Intelligence PLC,2026-08-11
+LEN-B,Lennar CORP Class B,2026-08-11
+CBC,Central Bancompany Class A,2026-08-11
+UHAL,U Haul Holding,2026-08-11
+LBRDA,Liberty Broadband CORP Series A,2026-08-11
+UWMC,Uwm Holdings Class A,2026-08-11
+HOLX,Hologic INC,2026-08-11
