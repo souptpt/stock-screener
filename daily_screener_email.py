@@ -218,6 +218,7 @@ COMPANY_NAMES = {
 #  罗素1000 成分股（运行时从 Wikipedia 动态获取）
 # ═══════════════════════════════════════════════════
 R1K_CACHE_FILE = os.path.join(OUTPUT_DIR, "russell1000_cache.csv")
+R1K_CACHE_AGE_DAYS = None   # 用了缓存时记录其新鲜度
 
 
 def _clean_symbol(s):
@@ -300,35 +301,189 @@ def _r1k_from_ishares():
 
 
 def _r1k_from_wikipedia():
-    """来源二：维基百科。数据中心 IP 常被限流，作为备用。"""
-    import requests, re
+    """昨天实测可用的原版：解析维基表格里的 Symbol 列。"""
+    import re, requests
     from io import StringIO
+
+    url = "https://en.wikipedia.org/wiki/Russell_1000_Index"
+    html = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30).text
+    tables = pd.read_html(StringIO(html))
+    print(f"    页面共解析出 {len(tables)} 张表")
+
+    best_tickers, best_names = [], {}
+    for i, t in enumerate(tables):
+        cols = [str(c) for c in t.columns]
+        sym_col = next((c for c in cols if re.search(r"symbol|ticker", c, re.I)), None)
+        if sym_col is None:
+            if t.shape[0] >= 100:      # 大表但没symbol列，值得报告
+                print(f"    表#{i}: {t.shape[0]}行，列名={cols[:6]}（无Symbol列）")
+            continue
+        name_col = next((c for c in cols if re.search(r"company|name|security", c, re.I)), None)
+
+        tickers, names = [], {}
+        for _, row in t.iterrows():
+            sym = str(row[sym_col]).strip()
+            if not re.fullmatch(r"[A-Z][A-Z.\-]{0,6}", sym):
+                continue
+            yf_sym = sym.replace(".", "-")
+            tickers.append(yf_sym)
+            if name_col is not None:
+                nm = re.sub(r"\[.*?\]", "", str(row[name_col])).strip()
+                if nm and nm.lower() != "nan":
+                    names[yf_sym] = nm
+
+        print(f"    表#{i}: {t.shape[0]}行，Symbol列='{sym_col}'，提取到 {len(tickers)} 只")
+        if len(tickers) > len(best_tickers):
+            best_tickers, best_names = tickers, names
+
+    return list(dict.fromkeys(best_tickers)), best_names
+
+
+def _r1k_from_wiki_links():
+    """备用：从页面里的个股链接提取代码。"""
+    import re, requests
     html = requests.get(
         "https://en.wikipedia.org/wiki/Russell_1000_Index",
-        headers={"User-Agent": "Mozilla/5.0"}, timeout=30).text
-    tables = pd.read_html(StringIO(html))
+        headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"},
+        timeout=45).text
 
-    best_t, best_n = [], {}
+    raw = []
+    raw += re.findall(r"nasdaq\.com/market-activity/stocks/([A-Za-z][A-Za-z.\-]{0,6})", html)
+    raw += re.findall(r"nyse\.com/quote/XNYS[:%3A]+([A-Za-z][A-Za-z.\-]{0,6})", html, re.I)
+    tickers = [s for s in (_clean_symbol(r) for r in raw) if s]
+    return list(dict.fromkeys(tickers)), {}
+
+
+def _r1k_from_ishares():
+    """来源一：iShares IWB ETF 官方持仓 CSV。最稳定，含公司名。"""
+    import requests, io, csv, re
+
+    urls = [
+        ("https://www.ishares.com/us/products/239707/"
+         "ishares-russell-1000-etf/1467271812596.ajax"
+         "?fileType=csv&fileName=IWB_holdings&dataType=fund"),
+        ("https://www.ishares.com/us/products/239707/"
+         "ishares-russell-1000-etf/1521942788811.ajax"
+         "?fileType=csv&fileName=IWB_holdings&dataType=fund"),
+    ]
+
+    last_err = None
+    for url in urls:
+        try:
+            r = requests.get(url, headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                "Accept": "text/csv,*/*",
+            }, timeout=45)
+            r.raise_for_status()
+            text = r.text
+            lines = [l for l in text.splitlines() if l.strip()]
+
+            # 宽松找表头：某一行同时含 Ticker 和 Name
+            hdr = None
+            for i, l in enumerate(lines[:60]):
+                low = l.lower()
+                if "ticker" in low and "name" in low:
+                    hdr = i
+                    break
+            if hdr is None:
+                last_err = f"未找到表头（前3行示例：{lines[:3]}）"
+                continue
+
+            reader = csv.DictReader(io.StringIO("\n".join(lines[hdr:])))
+            # 找出真正叫 Ticker / Name / Asset Class 的列（可能有空格或引号）
+            fns = reader.fieldnames or []
+            col_tk = next((c for c in fns if c and c.strip().lower() == "ticker"), None)
+            col_nm = next((c for c in fns if c and c.strip().lower() == "name"), None)
+            col_ac = next((c for c in fns if c and "asset class" in c.strip().lower()), None)
+            if col_tk is None:
+                last_err = f"表头里没有 Ticker 列，实际列名：{fns[:8]}"
+                continue
+
+            tickers, names = [], {}
+            for row in reader:
+                sym = _clean_symbol(row.get(col_tk, ""))
+                if not sym:
+                    continue
+                if col_ac:
+                    ac = (row.get(col_ac) or "").strip().lower()
+                    if ac and ac != "equity":
+                        continue
+                tickers.append(sym)
+                if col_nm:
+                    nm = (row.get(col_nm) or "").strip()
+                    if nm:
+                        names[sym] = nm
+
+            tickers = list(dict.fromkeys(tickers))
+            if len(tickers) >= 500:
+                return tickers, names
+            last_err = f"只解析出 {len(tickers)} 只"
+        except Exception as e:
+            last_err = f"{type(e).__name__}: {e}"
+
+    raise RuntimeError(last_err or "未知错误")
+
+
+def _r1k_from_wikipedia():
+    """来源：维基百科 Russell 1000 页面。
+
+    该页表格只有一个 Company 列，公司名/交易所/代码挤在一格里，
+    没有独立的 Symbol 列。所以不解析表格，直接从页面里的
+    个股链接提取代码，形式如：
+      nasdaq.com/market-activity/stocks/nvda   -> NVDA
+      nyse.com/quote/XNYS:BRK.B                -> BRK-B
+    """
+    import requests, re
+    html = requests.get(
+        "https://en.wikipedia.org/wiki/Russell_1000_Index",
+        headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"},
+        timeout=45).text
+
+    raw = []
+    raw += re.findall(r"nasdaq\.com/market-activity/stocks/([A-Za-z][A-Za-z.\-]{0,6})", html)
+    raw += re.findall(r"nyse\.com/quote/XNYS[:%3A]+([A-Za-z][A-Za-z.\-]{0,6})", html, re.I)
+    raw += re.findall(r"cboe\.com/[^\"\'<>]*?/([A-Za-z][A-Za-z.\-]{0,6})/?[\"\'<]", html)
+
+    tickers = []
+    for r in raw:
+        sym = _clean_symbol(r)
+        if sym:
+            tickers.append(sym)
+    tickers = list(dict.fromkeys(tickers))
+
+    if len(tickers) >= 500:
+        return tickers, {}
+
+    # 备用：万一以后页面加回了 Symbol 列，再试解析表格
+    from io import StringIO
+    try:
+        tables = pd.read_html(StringIO(html))
+    except Exception:
+        return tickers, {}
+
+    best_t = tickers
     for t in tables:
         cols = [str(c) for c in t.columns]
         sym_col = next((c for c in cols if re.search(r"symbol|ticker", c, re.I)), None)
         if sym_col is None:
             continue
-        name_col = next((c for c in cols if re.search(r"company|name|security", c, re.I)), None)
-
-        tk, nm_map = [], {}
-        for _, row in t.iterrows():
-            sym = _clean_symbol(row[sym_col])
-            if not sym:
-                continue
-            tk.append(sym)
-            if name_col is not None:
-                nm = re.sub(r"\[.*?\]", "", str(row[name_col])).strip()
-                if nm and nm.lower() != "nan":
-                    nm_map[sym] = nm
+        # 按整列取值，避免维基多列布局导致列名重复时取到 Series
+        col = t[sym_col]
+        if hasattr(col, "columns"):          # 同名列被取成 DataFrame
+            col = col.iloc[:, 0]
+        vals = col.dropna().astype(str).str.strip().tolist()
+        tk = [s for s in (_clean_symbol(v) for v in vals) if s]
         if len(tk) > len(best_t):
-            best_t, best_n = tk, nm_map
-    return list(dict.fromkeys(best_t)), best_n
+            best_t = tk
+
+    # 再兜一层：整页扫所有像股票代码的独立词
+    if len(best_t) < 500:
+        loose = re.findall(r">([A-Z]{1,5}(?:\.[A-Z])?)<", html)
+        loose = [s for s in (_clean_symbol(v) for v in loose) if s]
+        if len(set(loose)) > len(best_t):
+            best_t = loose
+
+    return list(dict.fromkeys(best_t)), {}
 
 
 def _r1k_from_stockanalysis():
@@ -366,12 +521,21 @@ def _r1k_from_stockanalysis():
 
 
 def _r1k_from_cache():
-    """来源三：仓库里的本地缓存文件，前两个都失败时兜底。"""
+    """兜底来源：仓库里的缓存文件。同时记录缓存生成日期。"""
+    global R1K_CACHE_AGE_DAYS
     df = pd.read_csv(R1K_CACHE_FILE)
     tickers = df["ticker"].dropna().astype(str).tolist()
     names = {}
     if "name" in df.columns:
         names = {r["ticker"]: r["name"] for _, r in df.dropna(subset=["name"]).iterrows()}
+
+    if "fetched" in df.columns and len(df) > 0:
+        try:
+            d = pd.to_datetime(df["fetched"].iloc[0]).date()
+            R1K_CACHE_AGE_DAYS = (datetime.now().date() - d).days
+            print(f"    缓存生成于 {d}（{R1K_CACHE_AGE_DAYS} 天前）")
+        except Exception:
+            pass
     return tickers, names
 
 
@@ -380,6 +544,7 @@ def _save_r1k_cache(tickers, names):
         pd.DataFrame({
             "ticker": tickers,
             "name": [names.get(t, "") for t in tickers],
+            "fetched": datetime.now().strftime("%Y-%m-%d"),
         }).to_csv(R1K_CACHE_FILE, index=False)
     except Exception:
         pass
@@ -388,17 +553,18 @@ def _save_r1k_cache(tickers, names):
 def get_russell1000():
     """依次尝试多个来源，返回 (tickers, {ticker: 公司名})。"""
     sources = [
-        ("iShares IWB 官方持仓",  _r1k_from_ishares),
-        ("StockAnalysis IWB",     _r1k_from_stockanalysis),
-        ("维基百科",              _r1k_from_wikipedia),
-        ("本地缓存文件",          _r1k_from_cache),
+        ("本地缓存(iShares官方)",  _r1k_from_cache),
+        ("维基百科(表格)",         _r1k_from_wikipedia),
+        ("维基百科(链接)",         _r1k_from_wiki_links),
+        ("iShares 在线接口",       _r1k_from_ishares),
+        ("StockAnalysis IWB",      _r1k_from_stockanalysis),
     ]
     for label, fn in sources:
         try:
             tickers, names = fn()
             if len(tickers) >= 500:
                 print(f"  ✓ 罗素1000 来源：{label} — {len(tickers)} 只")
-                if label != "本地缓存文件":
+                if not label.startswith("本地缓存"):
                     _save_r1k_cache(tickers, names)
                 return tickers, names
             print(f"  ✗ {label}：只拿到 {len(tickers)} 只，数量不足，尝试下一个来源")
@@ -616,7 +782,16 @@ def send_email(df, filepath, data_date, r1k_count=0):
 <td style="padding:6px 10px;border-bottom:1px solid #eee;text-align:right;color:{color};font-weight:{weight}">{dev}%</td>
 </tr>"""
 
-    warn_banner = "" if r1k_count else (
+    stale_banner = ""
+    if r1k_count and R1K_CACHE_AGE_DAYS is not None and R1K_CACHE_AGE_DAYS > 400:
+        stale_banner = (
+            '<div style="background:#FDF3E3;border-left:4px solid #E67E22;'
+            'padding:10px 14px;margin-bottom:16px;font-size:13px;color:#7A4A11">'
+            f'⚠ 罗素1000名单来自 {R1K_CACHE_AGE_DAYS} 天前的缓存，已跨过一次年度重构'
+            '（每年6月末），建议更新 russell1000_cache.csv。</div>'
+        )
+
+    warn_banner = stale_banner if r1k_count else (
         '<div style="background:#FDF3E3;border-left:4px solid #E67E22;'
         'padding:10px 14px;margin-bottom:16px;font-size:13px;color:#7A4A11">'
         '⚠ 本次罗素1000成分股获取失败，仅扫描了 SPX500 + NDX100 + DJCA，'
