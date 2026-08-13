@@ -231,31 +231,72 @@ def _clean_symbol(s):
 
 def _r1k_from_ishares():
     """来源一：iShares IWB ETF 官方持仓 CSV。最稳定，含公司名。"""
-    import requests, io, csv
-    url = ("https://www.ishares.com/us/products/239707/"
-           "ishares-russell-1000-etf/1467271812596.ajax"
-           "?fileType=csv&fileName=IWB_holdings&dataType=fund")
-    r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=45)
-    r.raise_for_status()
+    import requests, io, csv, re
 
-    lines = r.text.splitlines()
-    # 前面有若干行基金元数据，找到真正的表头行
-    hdr = next(i for i, l in enumerate(lines) if l.lstrip('"').startswith("Ticker"))
-    reader = csv.DictReader(io.StringIO("\n".join(lines[hdr:])))
+    urls = [
+        ("https://www.ishares.com/us/products/239707/"
+         "ishares-russell-1000-etf/1467271812596.ajax"
+         "?fileType=csv&fileName=IWB_holdings&dataType=fund"),
+        ("https://www.ishares.com/us/products/239707/"
+         "ishares-russell-1000-etf/1521942788811.ajax"
+         "?fileType=csv&fileName=IWB_holdings&dataType=fund"),
+    ]
 
-    tickers, names = [], {}
-    for row in reader:
-        sym = _clean_symbol(row.get("Ticker", ""))
-        if not sym:
-            continue
-        cls = (row.get("Asset Class") or "").strip().lower()
-        if cls and cls != "equity":       # 排除现金、期货等
-            continue
-        tickers.append(sym)
-        nm = (row.get("Name") or "").strip()
-        if nm:
-            names[sym] = nm
-    return list(dict.fromkeys(tickers)), names
+    last_err = None
+    for url in urls:
+        try:
+            r = requests.get(url, headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                "Accept": "text/csv,*/*",
+            }, timeout=45)
+            r.raise_for_status()
+            text = r.text
+            lines = [l for l in text.splitlines() if l.strip()]
+
+            # 宽松找表头：某一行同时含 Ticker 和 Name
+            hdr = None
+            for i, l in enumerate(lines[:60]):
+                low = l.lower()
+                if "ticker" in low and "name" in low:
+                    hdr = i
+                    break
+            if hdr is None:
+                last_err = f"未找到表头（前3行示例：{lines[:3]}）"
+                continue
+
+            reader = csv.DictReader(io.StringIO("\n".join(lines[hdr:])))
+            # 找出真正叫 Ticker / Name / Asset Class 的列（可能有空格或引号）
+            fns = reader.fieldnames or []
+            col_tk = next((c for c in fns if c and c.strip().lower() == "ticker"), None)
+            col_nm = next((c for c in fns if c and c.strip().lower() == "name"), None)
+            col_ac = next((c for c in fns if c and "asset class" in c.strip().lower()), None)
+            if col_tk is None:
+                last_err = f"表头里没有 Ticker 列，实际列名：{fns[:8]}"
+                continue
+
+            tickers, names = [], {}
+            for row in reader:
+                sym = _clean_symbol(row.get(col_tk, ""))
+                if not sym:
+                    continue
+                if col_ac:
+                    ac = (row.get(col_ac) or "").strip().lower()
+                    if ac and ac != "equity":
+                        continue
+                tickers.append(sym)
+                if col_nm:
+                    nm = (row.get(col_nm) or "").strip()
+                    if nm:
+                        names[sym] = nm
+
+            tickers = list(dict.fromkeys(tickers))
+            if len(tickers) >= 500:
+                return tickers, names
+            last_err = f"只解析出 {len(tickers)} 只"
+        except Exception as e:
+            last_err = f"{type(e).__name__}: {e}"
+
+    raise RuntimeError(last_err or "未知错误")
 
 
 def _r1k_from_wikipedia():
@@ -290,6 +331,40 @@ def _r1k_from_wikipedia():
     return list(dict.fromkeys(best_t)), best_n
 
 
+def _r1k_from_stockanalysis():
+    """来源三：stockanalysis.com 的 IWB 持仓页，返回 JSON。"""
+    import requests
+    url = "https://stockanalysis.com/api/symbol/e/IWB/holdings"
+    r = requests.get(url, headers={
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "Accept": "application/json",
+    }, timeout=45)
+    r.raise_for_status()
+    payload = r.json()
+
+    # 兼容几种可能的 JSON 结构
+    rows = payload
+    for key in ("data", "list", "holdings"):
+        if isinstance(rows, dict) and key in rows:
+            rows = rows[key]
+    if isinstance(rows, dict):
+        rows = next((v for v in rows.values() if isinstance(v, list)), [])
+
+    tickers, names = [], {}
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        raw = row.get("s") or row.get("symbol") or row.get("ticker") or ""
+        sym = _clean_symbol(raw)
+        if not sym:
+            continue
+        tickers.append(sym)
+        nm = (row.get("n") or row.get("name") or "").strip()
+        if nm:
+            names[sym] = nm
+    return list(dict.fromkeys(tickers)), names
+
+
 def _r1k_from_cache():
     """来源三：仓库里的本地缓存文件，前两个都失败时兜底。"""
     df = pd.read_csv(R1K_CACHE_FILE)
@@ -313,9 +388,10 @@ def _save_r1k_cache(tickers, names):
 def get_russell1000():
     """依次尝试多个来源，返回 (tickers, {ticker: 公司名})。"""
     sources = [
-        ("iShares IWB 官方持仓", _r1k_from_ishares),
-        ("维基百科",             _r1k_from_wikipedia),
-        ("本地缓存文件",         _r1k_from_cache),
+        ("iShares IWB 官方持仓",  _r1k_from_ishares),
+        ("StockAnalysis IWB",     _r1k_from_stockanalysis),
+        ("维基百科",              _r1k_from_wikipedia),
+        ("本地缓存文件",          _r1k_from_cache),
     ]
     for label, fn in sources:
         try:
