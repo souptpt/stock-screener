@@ -217,48 +217,120 @@ COMPANY_NAMES = {
 # ═══════════════════════════════════════════════════
 #  罗素1000 成分股（运行时从 Wikipedia 动态获取）
 # ═══════════════════════════════════════════════════
-def get_russell1000():
-    """抓取罗素1000成分股，返回 (tickers, {ticker: 公司名})。
-    失败则返回空，脚本仍会用其他指数继续跑。"""
+R1K_CACHE_FILE = os.path.join(OUTPUT_DIR, "russell1000_cache.csv")
+
+
+def _clean_symbol(s):
+    """维基/iShares 用 . 表示股份类别，Yahoo 用 -（BRK.B -> BRK-B）"""
     import re
-    try:
-        import requests
-        from io import StringIO
-        url = "https://en.wikipedia.org/wiki/Russell_1000_Index"
-        headers = {"User-Agent": "Mozilla/5.0"}
-        html = requests.get(url, headers=headers, timeout=30).text
-        tables = pd.read_html(StringIO(html))
+    s = str(s).strip().upper()
+    if not re.fullmatch(r"[A-Z][A-Z.\-]{0,6}", s):
+        return None
+    return s.replace(".", "-")
 
-        best_tickers, best_names = [], {}
-        for t in tables:
-            cols = [str(c) for c in t.columns]
-            sym_col = next((c for c in cols if re.search(r"symbol|ticker", c, re.I)), None)
-            if sym_col is None:
+
+def _r1k_from_ishares():
+    """来源一：iShares IWB ETF 官方持仓 CSV。最稳定，含公司名。"""
+    import requests, io, csv
+    url = ("https://www.ishares.com/us/products/239707/"
+           "ishares-russell-1000-etf/1467271812596.ajax"
+           "?fileType=csv&fileName=IWB_holdings&dataType=fund")
+    r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=45)
+    r.raise_for_status()
+
+    lines = r.text.splitlines()
+    # 前面有若干行基金元数据，找到真正的表头行
+    hdr = next(i for i, l in enumerate(lines) if l.lstrip('"').startswith("Ticker"))
+    reader = csv.DictReader(io.StringIO("\n".join(lines[hdr:])))
+
+    tickers, names = [], {}
+    for row in reader:
+        sym = _clean_symbol(row.get("Ticker", ""))
+        if not sym:
+            continue
+        cls = (row.get("Asset Class") or "").strip().lower()
+        if cls and cls != "equity":       # 排除现金、期货等
+            continue
+        tickers.append(sym)
+        nm = (row.get("Name") or "").strip()
+        if nm:
+            names[sym] = nm
+    return list(dict.fromkeys(tickers)), names
+
+
+def _r1k_from_wikipedia():
+    """来源二：维基百科。数据中心 IP 常被限流，作为备用。"""
+    import requests, re
+    from io import StringIO
+    html = requests.get(
+        "https://en.wikipedia.org/wiki/Russell_1000_Index",
+        headers={"User-Agent": "Mozilla/5.0"}, timeout=30).text
+    tables = pd.read_html(StringIO(html))
+
+    best_t, best_n = [], {}
+    for t in tables:
+        cols = [str(c) for c in t.columns]
+        sym_col = next((c for c in cols if re.search(r"symbol|ticker", c, re.I)), None)
+        if sym_col is None:
+            continue
+        name_col = next((c for c in cols if re.search(r"company|name|security", c, re.I)), None)
+
+        tk, nm_map = [], {}
+        for _, row in t.iterrows():
+            sym = _clean_symbol(row[sym_col])
+            if not sym:
                 continue
-            name_col = next((c for c in cols if re.search(r"company|name|security", c, re.I)), None)
+            tk.append(sym)
+            if name_col is not None:
+                nm = re.sub(r"\[.*?\]", "", str(row[name_col])).strip()
+                if nm and nm.lower() != "nan":
+                    nm_map[sym] = nm
+        if len(tk) > len(best_t):
+            best_t, best_n = tk, nm_map
+    return list(dict.fromkeys(best_t)), best_n
 
-            tickers, names = [], {}
-            for _, row in t.iterrows():
-                sym = str(row[sym_col]).strip()
-                if not re.fullmatch(r"[A-Z][A-Z.\-]{0,6}", sym):
-                    continue
-                yf_sym = sym.replace(".", "-")
-                tickers.append(yf_sym)
-                if name_col is not None:
-                    nm = str(row[name_col]).strip()
-                    # 去掉维基脚注标记，如 "Apple Inc.[1]"
-                    nm = re.sub(r"\[.*?\]", "", nm).strip()
-                    if nm and nm.lower() != "nan":
-                        names[yf_sym] = nm
 
-            if len(tickers) > len(best_tickers):
-                best_tickers, best_names = tickers, names
+def _r1k_from_cache():
+    """来源三：仓库里的本地缓存文件，前两个都失败时兜底。"""
+    df = pd.read_csv(R1K_CACHE_FILE)
+    tickers = df["ticker"].dropna().astype(str).tolist()
+    names = {}
+    if "name" in df.columns:
+        names = {r["ticker"]: r["name"] for _, r in df.dropna(subset=["name"]).iterrows()}
+    return tickers, names
 
-        best_tickers = list(dict.fromkeys(best_tickers))
-        return best_tickers, best_names
-    except Exception as e:
-        print(f"  ⚠ 罗素1000抓取失败（{e}），本次仅扫描 SPX/NDX/DJCA")
-        return [], {}
+
+def _save_r1k_cache(tickers, names):
+    try:
+        pd.DataFrame({
+            "ticker": tickers,
+            "name": [names.get(t, "") for t in tickers],
+        }).to_csv(R1K_CACHE_FILE, index=False)
+    except Exception:
+        pass
+
+
+def get_russell1000():
+    """依次尝试多个来源，返回 (tickers, {ticker: 公司名})。"""
+    sources = [
+        ("iShares IWB 官方持仓", _r1k_from_ishares),
+        ("维基百科",             _r1k_from_wikipedia),
+        ("本地缓存文件",         _r1k_from_cache),
+    ]
+    for label, fn in sources:
+        try:
+            tickers, names = fn()
+            if len(tickers) >= 500:
+                print(f"  ✓ 罗素1000 来源：{label} — {len(tickers)} 只")
+                if label != "本地缓存文件":
+                    _save_r1k_cache(tickers, names)
+                return tickers, names
+            print(f"  ✗ {label}：只拿到 {len(tickers)} 只，数量不足，尝试下一个来源")
+        except Exception as e:
+            print(f"  ✗ {label} 失败：{type(e).__name__} {e}")
+
+    print("  ⚠ 所有来源均失败，本次仅扫描 SPX/NDX/DJCA（覆盖范围会明显变小）")
+    return [], {}
 
 
 def fill_missing_names(tickers):
@@ -383,7 +455,7 @@ def run_screener():
             continue
 
     if not results:
-        return None, None, data_date
+        return None, None, data_date, len(r1k)
 
     df = pd.DataFrame(results).sort_values("偏离年线%")
 
@@ -421,10 +493,10 @@ def run_screener():
     ws.freeze_panes = "A2"
     wb.save(fname)
 
-    return df, fname, data_date
+    return df, fname, data_date, len(r1k)
 
 
-def send_email(df, filepath, data_date):
+def send_email(df, filepath, data_date, r1k_count=0):
     """把Excel作为附件发送，正文含完整HTML表格"""
     y, m, d = data_date.split("-")
     subject = f"SPX 500、NDX、DJCA和罗素1000指数偏离年线20%以上_{y}年{m}月{d}日"
@@ -437,6 +509,7 @@ def send_email(df, filepath, data_date):
 
 数据日期：{data_date}
 筛选条件：股价低于200日均线 20% 及以上
+扫描范围：{'SPX500 + NDX100 + DJCA + 罗素1000' if r1k_count else '⚠ 仅 SPX500 + NDX100 + DJCA（罗素1000获取失败）'}
 
 符合条件总数：{len(df)} 只
 偏离超过 -30%：{below_30} 只
@@ -467,10 +540,18 @@ def send_email(df, filepath, data_date):
 <td style="padding:6px 10px;border-bottom:1px solid #eee;text-align:right;color:{color};font-weight:{weight}">{dev}%</td>
 </tr>"""
 
+    warn_banner = "" if r1k_count else (
+        '<div style="background:#FDF3E3;border-left:4px solid #E67E22;'
+        'padding:10px 14px;margin-bottom:16px;font-size:13px;color:#7A4A11">'
+        '⚠ 本次罗素1000成分股获取失败，仅扫描了 SPX500 + NDX100 + DJCA，'
+        '结果数量会明显偏少。</div>'
+    )
+
     html_body = f"""<html><body style="font-family:-apple-system,Segoe UI,Arial,sans-serif;color:#222;line-height:1.5">
 <h2 style="margin:0 0 4px;font-size:20px;font-weight:600">SPX 500 + NDX 100 + DJCA + 罗素1000 偏离年线筛选</h2>
 <p style="margin:0 0 18px;color:#666;font-size:13px">数据日期 {data_date} &nbsp;·&nbsp; 条件：股价低于200日均线 20% 及以上</p>
 
+{warn_banner}
 <table style="border-collapse:collapse;margin-bottom:22px">
 <tr>
   <td style="padding:10px 18px;background:#F4F6F8;border-radius:6px 0 0 6px;text-align:center">
@@ -535,7 +616,7 @@ def main():
         print("  ❌ 请先在脚本顶部填入 Gmail App Password")
         return
 
-    df, filepath, data_date = run_screener()
+    df, filepath, data_date, r1k_count = run_screener()
 
     if df is None:
         print("  未找到符合条件的股票，不发送邮件。")
@@ -545,7 +626,7 @@ def main():
     print(f"  正在发送邮件...")
 
     try:
-        send_email(df, filepath, data_date)
+        send_email(df, filepath, data_date, r1k_count)
     except Exception as e:
         print(f"  ❌ 邮件发送失败：{e}")
         print(f"     Excel文件仍已保存：{filepath}")
