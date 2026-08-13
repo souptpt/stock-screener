@@ -2,9 +2,9 @@ name: Daily Stock Screener
 
 on:
   schedule:
-    # 【测试中】UTC 03:10 = 美东 11:10 PM (EDT)
-    # 测完改回: '15 0 * * 2-6'  (美东 8:15 PM 周一至周五)
-    - cron: '10 3 * * *'
+    # UTC 22:00 = 美东 6:00 PM (EDT) / 5:00 PM (EST冬令时)
+    # 周一至周五，美股 4PM 收盘后运行
+    - cron: '0 22 * * 1-5'
   workflow_dispatch:
 
 permissions:
