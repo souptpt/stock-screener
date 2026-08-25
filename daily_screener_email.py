@@ -669,6 +669,12 @@ def run_screener():
     for ticker, series in series_map.items():
         try:
             current = float(series.iloc[-1])
+            # 当日涨跌幅 = (今收 - 昨收) / 昨收
+            day_chg = None
+            if len(series) >= 2:
+                prev = float(series.iloc[-2])
+                if prev:
+                    day_chg = round((current - prev) / prev * 100, 2)
             if data_date is None:
                 data_date = series.index[-1].strftime("%Y-%m-%d")
 
@@ -690,6 +696,7 @@ def run_screener():
                     "公司名称": names.get(ticker, ""),
                     "所属指数": "+".join(idx),
                     "收盘价(USD)": round(current, 2),
+                    "当日涨跌%": day_chg,
                     "MA200(USD)": round(ma200, 2),
                     "偏离年线%": round(deviation * 100, 2),
                 })
@@ -724,7 +731,8 @@ def run_screener():
     wb = load_workbook(fname)
     ws = wb.active
     headers = [ws.cell(1, c).value for c in range(1, ws.max_column + 1)]
-    widths = {"股票代码":10,"公司名称":28,"所属指数":18,"收盘价(USD)":14,"MA200(USD)":14,"偏离年线%":12}
+    widths = {"股票代码":10,"公司名称":28,"所属指数":18,"收盘价(USD)":14,
+              "当日涨跌%":12,"MA200(USD)":14,"偏离年线%":12}
     for i, h in enumerate(headers, 1):
         c = ws.cell(1, i)
         c.font = Font(bold=True, color="FFFFFF", name="Arial", size=10)
@@ -766,6 +774,18 @@ def send_email(df, filepath, data_date, r1k_count=0):
     rows_html = ""
     for _, r in df.iterrows():
         dev = r["偏离年线%"]
+
+        # 当日涨跌：涨绿跌红（美股习惯）
+        dc = r.get("当日涨跌%")
+        if dc is None or pd.isna(dc):
+            dc_txt, dc_color = "—", "#999"
+        elif dc > 0:
+            dc_txt, dc_color = f"+{dc}%", "#1A7F37"
+        elif dc < 0:
+            dc_txt, dc_color = f"{dc}%", "#C0392B"
+        else:
+            dc_txt, dc_color = "0.00%", "#666"
+
         # 偏离越深颜色越红
         if dev <= -40:
             color = "#C0392B"; weight = "600"
@@ -778,6 +798,7 @@ def send_email(df, filepath, data_date, r1k_count=0):
 <td style="padding:6px 10px;border-bottom:1px solid #eee">{r['公司名称']}</td>
 <td style="padding:6px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666">{r['所属指数']}</td>
 <td style="padding:6px 10px;border-bottom:1px solid #eee;text-align:right">${r['收盘价(USD)']}</td>
+<td style="padding:6px 10px;border-bottom:1px solid #eee;text-align:right;color:{dc_color}">{dc_txt}</td>
 <td style="padding:6px 10px;border-bottom:1px solid #eee;text-align:right;color:#888">${r['MA200(USD)']}</td>
 <td style="padding:6px 10px;border-bottom:1px solid #eee;text-align:right;color:{color};font-weight:{weight}">{dev}%</td>
 </tr>"""
@@ -822,6 +843,7 @@ def send_email(df, filepath, data_date, r1k_count=0):
 <th style="padding:9px 10px;text-align:left">公司名称</th>
 <th style="padding:9px 10px;text-align:left">指数</th>
 <th style="padding:9px 10px;text-align:right">收盘价</th>
+<th style="padding:9px 10px;text-align:right">当日涨跌</th>
 <th style="padding:9px 10px;text-align:right">MA200</th>
 <th style="padding:9px 10px;text-align:right">偏离年线</th>
 </tr></thead>
