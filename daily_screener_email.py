@@ -575,6 +575,68 @@ def get_russell1000():
     return [], {}
 
 
+SCREEN_HISTORY_FILE = os.path.join(OUTPUT_DIR, "screen_history.csv")
+
+
+def load_baseline(current_date):
+    """取上一个交易日的名单作为对比基准。
+
+    返回 (基准日期, {ticker: (公司名, 偏离年线%)})。
+    只取日期早于 current_date 的最近一次快照——这样同一天重复运行时，
+    基准仍是真正的上一交易日，不会变成跟自己比。
+    """
+    try:
+        hist = pd.read_csv(SCREEN_HISTORY_FILE)
+    except Exception:
+        return None, {}
+
+    if hist.empty or "data_date" not in hist.columns:
+        return None, {}
+
+    earlier = hist[hist["data_date"].astype(str) < str(current_date)]
+    if earlier.empty:
+        return None, {}
+
+    base_date = sorted(earlier["data_date"].astype(str).unique())[-1]
+    rows = earlier[earlier["data_date"].astype(str) == base_date]
+
+    out = {}
+    for _, r in rows.iterrows():
+        t = str(r["ticker"])
+        nm = str(r.get("name", "") or "")
+        try:
+            dev = float(r.get("deviation"))
+        except Exception:
+            dev = None
+        out[t] = (nm, dev)
+    return base_date, out
+
+
+def save_history(df, data_date):
+    """把本次结果写入历史文件，只保留最近两个交易日的快照。"""
+    try:
+        cur = pd.DataFrame({
+            "data_date": data_date,
+            "ticker":    df["股票代码"],
+            "name":      df["公司名称"],
+            "deviation": df["偏离年线%"],
+        })
+
+        try:
+            hist = pd.read_csv(SCREEN_HISTORY_FILE)
+            hist = hist[hist["data_date"].astype(str) != str(data_date)]
+            hist = pd.concat([hist, cur], ignore_index=True)
+        except Exception:
+            hist = cur
+
+        # 只留最近两个日期
+        keep = sorted(hist["data_date"].astype(str).unique())[-2:]
+        hist = hist[hist["data_date"].astype(str).isin(keep)]
+        hist.to_csv(SCREEN_HISTORY_FILE, index=False)
+    except Exception as e:
+        print(f"  ⚠ 历史名单保存失败：{e}")
+
+
 def fill_missing_names(tickers):
     """对仍缺公司名的股票，逐只从 Yahoo 补齐。只对筛选结果调用，数量少。"""
     found = {}
@@ -704,7 +766,7 @@ def run_screener():
             continue
 
     if not results:
-        return None, None, data_date, len(r1k)
+        return None, None, data_date, len(r1k), (None, [], [])
 
     df = pd.DataFrame(results).sort_values("偏离年线%")
 
@@ -719,6 +781,25 @@ def run_screener():
 
     if data_date is None:
         data_date = datetime.now().strftime("%Y-%m-%d")
+
+    # 与上一交易日对比
+    base_date, base_map = load_baseline(data_date)
+    cur_set = set(df["股票代码"])
+    if base_date:
+        added_t   = [t for t in df["股票代码"] if t not in base_map]
+        removed_t = [t for t in base_map if t not in cur_set]
+        name_map  = dict(zip(df["股票代码"], df["公司名称"]))
+        dev_map   = dict(zip(df["股票代码"], df["偏离年线%"]))
+        added   = [(t, name_map.get(t, ""), dev_map.get(t)) for t in added_t]
+        removed = [(t, base_map[t][0], base_map[t][1]) for t in removed_t]
+        removed.sort(key=lambda x: (x[2] if x[2] is not None else 0))
+        print(f"\n  对比 {base_date}：新增 {len(added)} 只，移出 {len(removed)} 只")
+    else:
+        added, removed = [], []
+        print("\n  无历史基准，本次不做对比（下次运行起生效）")
+
+    save_history(df, data_date)
+
     fname = os.path.join(OUTPUT_DIR, f"SPX_NDX_DJCA_R1000_偏离年线20%以上_{data_date.replace('-','')}.xlsx")
 
     with pd.ExcelWriter(fname, engine="openpyxl") as w:
@@ -743,16 +824,59 @@ def run_screener():
     ws.freeze_panes = "A2"
     wb.save(fname)
 
-    return df, fname, data_date, len(r1k)
+    return df, fname, data_date, len(r1k), (base_date, added, removed)
 
 
-def send_email(df, filepath, data_date, r1k_count=0):
+def send_email(df, filepath, data_date, r1k_count=0, diff=None):
     """把Excel作为附件发送，正文含完整HTML表格"""
     y, m, d = data_date.split("-")
     subject = f"SPX 500、NDX、DJCA和罗素1000指数偏离年线20%以上_{y}年{m}月{d}日"
 
     below_30 = len(df[df["偏离年线%"] <= -30])
     below_40 = len(df[df["偏离年线%"] <= -40])
+
+    # ── 与上一交易日的变动 ──
+    base_date, added, removed = (diff or (None, [], []))
+
+    if base_date:
+        def _fmt(items):
+            if not items:
+                return "  （无）"
+            return "\n".join(
+                f"  {t:<7} {nm}" + (f"  ({dv}%)" if dv is not None else "")
+                for t, nm, dv in items
+            )
+        diff_text = (
+            f"\n── 对比上一交易日 {base_date} ──\n"
+            f"新增 {len(added)} 只：\n{_fmt(added)}\n"
+            f"移出 {len(removed)} 只：\n{_fmt(removed)}\n"
+        )
+    else:
+        diff_text = "\n（首次运行，暂无上一交易日可对比）\n"
+
+    def _chips(items, kind):
+        """kind: 'in' 新增(红) / 'out' 移出(绿)"""
+        if not items:
+            return '<div style="font-size:12px;color:#999;padding:4px 0">无</div>'
+        bg, fg = ("#FCEBEB", "#A32D2D") if kind == "in" else ("#EAF3DE", "#3B6D11")
+        out = ""
+        for t, nm, dv in items:
+            dv_txt = f' <span style="opacity:.7">{dv}%</span>' if dv is not None else ""
+            out += (f'<span style="display:inline-block;background:{bg};color:{fg};'
+                    f'border-radius:5px;padding:3px 9px;margin:3px 5px 3px 0;font-size:12px">'
+                    f'<b style="font-family:monospace">{t}</b> {nm}{dv_txt}</span>')
+        return out
+
+    if base_date:
+        diff_html = f"""<div style="margin-bottom:22px;border:1px solid #eee;border-radius:8px;padding:14px 16px">
+<div style="font-size:12px;color:#777;margin-bottom:10px">较上一交易日 {base_date} 的变动</div>
+<div style="font-size:12px;color:#A32D2D;font-weight:600;margin-bottom:4px">▼ 新增跌破 {len(added)} 只</div>
+<div style="margin-bottom:12px">{_chips(added, "in")}</div>
+<div style="font-size:12px;color:#3B6D11;font-weight:600;margin-bottom:4px">▲ 回升移出 {len(removed)} 只</div>
+<div>{_chips(removed, "out")}</div>
+</div>"""
+    else:
+        diff_html = ""
 
     # 纯文本版（备用，邮件客户端不支持HTML时显示）
     text_body = f"""SPX 500 + NDX 100 + DJCA 65 + 罗素1000 每日筛选结果
@@ -764,6 +888,7 @@ def send_email(df, filepath, data_date, r1k_count=0):
 符合条件总数：{len(df)} 只
 偏离超过 -30%：{below_30} 只
 偏离超过 -40%：{below_40} 只
+{diff_text}
 
 {df.to_string(index=False)}
 
@@ -837,6 +962,7 @@ def send_email(df, filepath, data_date, r1k_count=0):
     <div style="font-size:11px;color:#777">偏离 &gt;40%</div></td>
 </tr></table>
 
+{diff_html}
 <table style="border-collapse:collapse;width:100%;font-size:13px">
 <thead><tr style="background:#1F3864;color:#fff">
 <th style="padding:9px 10px;text-align:left">代码</th>
@@ -889,7 +1015,7 @@ def main():
         print("  ❌ 请先在脚本顶部填入 Gmail App Password")
         return
 
-    df, filepath, data_date, r1k_count = run_screener()
+    df, filepath, data_date, r1k_count, diff = run_screener()
 
     if df is None:
         print("  未找到符合条件的股票，不发送邮件。")
@@ -899,7 +1025,7 @@ def main():
     print(f"  正在发送邮件...")
 
     try:
-        send_email(df, filepath, data_date, r1k_count)
+        send_email(df, filepath, data_date, r1k_count, diff)
     except Exception as e:
         print(f"  ❌ 邮件发送失败：{e}")
         print(f"     Excel文件仍已保存：{filepath}")
