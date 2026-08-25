@@ -604,11 +604,12 @@ def load_baseline(current_date):
     for _, r in rows.iterrows():
         t = str(r["ticker"])
         nm = str(r.get("name", "") or "")
+        ix = str(r.get("index", "") or "") if "index" in rows.columns else ""
         try:
             dev = float(r.get("deviation"))
         except Exception:
             dev = None
-        out[t] = (nm, dev)
+        out[t] = (nm, dev, ix)
     return base_date, out
 
 
@@ -619,6 +620,7 @@ def save_history(df, data_date):
             "data_date": data_date,
             "ticker":    df["股票代码"],
             "name":      df["公司名称"],
+            "index":     df["所属指数"],
             "deviation": df["偏离年线%"],
         })
 
@@ -790,8 +792,9 @@ def run_screener():
         removed_t = [t for t in base_map if t not in cur_set]
         name_map  = dict(zip(df["股票代码"], df["公司名称"]))
         dev_map   = dict(zip(df["股票代码"], df["偏离年线%"]))
-        added   = [(t, name_map.get(t, ""), dev_map.get(t)) for t in added_t]
-        removed = [(t, base_map[t][0], base_map[t][1]) for t in removed_t]
+        idx_map = dict(zip(df["股票代码"], df["所属指数"]))
+        added   = [(t, name_map.get(t, ""), dev_map.get(t), idx_map.get(t, "")) for t in added_t]
+        removed = [(t, base_map[t][0], base_map[t][1], base_map[t][2]) for t in removed_t]
         removed.sort(key=lambda x: (x[2] if x[2] is not None else 0))
         print(f"\n  对比 {base_date}：新增 {len(added)} 只，移出 {len(removed)} 只")
     else:
@@ -844,7 +847,7 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
                 return "  （无）"
             return "\n".join(
                 f"  {t:<7} {nm}" + (f"  ({dv}%)" if dv is not None else "")
-                for t, nm, dv in items
+                for t, nm, dv, _ix in items
             )
         diff_text = (
             f"\n── 对比上一交易日 {base_date} ──\n"
@@ -854,29 +857,45 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
     else:
         diff_text = "\n（首次运行，暂无上一交易日可对比）\n"
 
-    def _chips(items, kind):
-        """kind: 'in' 新增(红) / 'out' 移出(绿)"""
-        if not items:
-            return '<div style="font-size:12px;color:#999;padding:4px 0">无</div>'
-        bg, fg = ("#FCEBEB", "#A32D2D") if kind == "in" else ("#EAF3DE", "#3B6D11")
-        out = ""
-        for t, nm, dv in items:
-            dv_txt = f' <span style="opacity:.7">{dv}%</span>' if dv is not None else ""
-            out += (f'<span style="display:inline-block;background:{bg};color:{fg};'
-                    f'border-radius:5px;padding:3px 9px;margin:3px 5px 3px 0;font-size:12px">'
-                    f'<b style="font-family:monospace">{t}</b> {nm}{dv_txt}</span>')
-        return out
+    # 移出的股票：整行删除线，灰色，附在表尾
+    removed_html = ""
+    if removed:
+        removed_html += (
+            '<tr><td colspan="7" style="padding:8px 10px;background:#F7F7F5;'
+            'font-size:11.5px;color:#777;border-top:2px solid #ddd">'
+            f'▲ 以下 {len(removed)} 只已回升至年线20%以内，不再入选</td></tr>'
+        )
+        grey = ("padding:6px 10px;border-bottom:1px solid #eee;color:#AAA;text-decoration:line-through")
+        for _t, _nm, _dv, _ix in removed:
+            dv_txt = f"{_dv}%" if _dv is not None else "—"
+            removed_html += (
+                f'<tr style="background:#FBFBFA">'
+                f'<td style="{grey};font-family:monospace;font-weight:600">{_t}</td>'
+                f'<td style="{grey}">{_nm}</td>'
+                f'<td style="{grey};font-size:12px">{_ix}</td>'
+                f'<td style="{grey};text-align:right">—</td>'
+                f'<td style="{grey};text-align:right">—</td>'
+                f'<td style="{grey};text-align:right">—</td>'
+                f'<td style="{grey};text-align:right">{dv_txt}</td>'
+                f'</tr>'
+            )
 
     if base_date:
-        diff_html = f"""<div style="margin-bottom:22px;border:1px solid #eee;border-radius:8px;padding:14px 16px">
-<div style="font-size:12px;color:#777;margin-bottom:10px">较上一交易日 {base_date} 的变动</div>
-<div style="font-size:12px;color:#A32D2D;font-weight:600;margin-bottom:4px">▼ 新增跌破 {len(added)} 只</div>
-<div style="margin-bottom:12px">{_chips(added, "in")}</div>
-<div style="font-size:12px;color:#3B6D11;font-weight:600;margin-bottom:4px">▲ 回升移出 {len(removed)} 只</div>
-<div>{_chips(removed, "out")}</div>
-</div>"""
+        diff_html = (
+            f'<div style="margin-bottom:14px;font-size:12.5px;color:#666">'
+            f'较上一交易日 <b>{base_date}</b>：'
+            f'<span style="color:#A32D2D;font-weight:600">新增 {len(added)} 只</span> · '
+            f'<span style="color:#3B6D11;font-weight:600">移出 {len(removed)} 只</span>'
+            f'（下表中 <span style="background:#FFF3CD;padding:1px 5px;border-radius:3px">'
+            f'黄色底色</span> 为新增，'
+            f'<span style="text-decoration:line-through;color:#999">删除线</span> 为移出）'
+            f'</div>'
+        )
     else:
-        diff_html = ""
+        diff_html = (
+            '<div style="margin-bottom:14px;font-size:12.5px;color:#999">'
+            '首次运行，暂无上一交易日可对比</div>'
+        )
 
     # 纯文本版（备用，邮件客户端不支持HTML时显示）
     text_body = f"""SPX 500 + NDX 100 + DJCA 65 + 罗素1000 每日筛选结果
@@ -896,9 +915,16 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
 """
 
     # HTML表格
+    added_set = {t for t, _n, _d, _i in added}
+
     rows_html = ""
     for _, r in df.iterrows():
         dev = r["偏离年线%"]
+        is_new = r["股票代码"] in added_set
+        row_bg = " background:#FFF3CD;" if is_new else ""
+        new_tag = ('<span style="background:#E67E22;color:#fff;font-size:9px;'
+                   'padding:1px 5px;border-radius:3px;margin-left:6px;'
+                   'vertical-align:middle">NEW</span>') if is_new else ""
 
         # 当日涨跌：涨绿跌红（美股习惯）
         dc = r.get("当日涨跌%")
@@ -918,8 +944,8 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
             color = "#E67E22"; weight = "500"
         else:
             color = "#555"; weight = "400"
-        rows_html += f"""<tr>
-<td style="padding:6px 10px;border-bottom:1px solid #eee;font-family:monospace;font-weight:600">{r['股票代码']}</td>
+        rows_html += f"""<tr style="{row_bg}">
+<td style="padding:6px 10px;border-bottom:1px solid #eee;font-family:monospace;font-weight:600">{r['股票代码']}{new_tag}</td>
 <td style="padding:6px 10px;border-bottom:1px solid #eee">{r['公司名称']}</td>
 <td style="padding:6px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666">{r['所属指数']}</td>
 <td style="padding:6px 10px;border-bottom:1px solid #eee;text-align:right">${r['收盘价(USD)']}</td>
@@ -973,7 +999,7 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
 <th style="padding:9px 10px;text-align:right">MA200</th>
 <th style="padding:9px 10px;text-align:right">偏离年线</th>
 </tr></thead>
-<tbody>{rows_html}</tbody>
+<tbody>{rows_html}{removed_html}</tbody>
 </table>
 
 <p style="margin-top:20px;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px">
