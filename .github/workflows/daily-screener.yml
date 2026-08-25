@@ -31,18 +31,19 @@ jobs:
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
         run: python daily_screener_email.py
 
-      - name: 若罗素1000缓存有更新则提交回仓库
+      - name: 提交历史名单与罗素1000缓存
         if: always()
         run: |
-          if [[ -n "$(git status --porcelain russell1000_cache.csv)" ]]; then
+          if [[ -n "$(git status --porcelain screen_history.csv russell1000_cache.csv)" ]]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add russell1000_cache.csv
-            git commit -m "自动更新罗素1000成分股缓存"
+            git add screen_history.csv russell1000_cache.csv
+            git commit -m "更新每日名单快照"
+            git pull --rebase --autostash
             git push
-            echo "缓存已更新并提交"
+            echo "已提交"
           else
-            echo "缓存无变化，跳过提交"
+            echo "无变化，跳过提交"
           fi
 
       - name: 保存 Excel 备份
