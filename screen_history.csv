@@ -1,57 +1,4 @@
 data_date,ticker,name,deviation,index
-2026-09-04,UWMC,Uwm Holdings Class A,-56.18,R1K
-2026-09-04,KRMN,Karman Holdings INC,-44.19,R1K
-2026-09-04,TTD,Trade Desk INC Class A,-42.35,R1K
-2026-09-04,WING,Wingstop,-42.33,R1K
-2026-09-04,PRIM,Primoris Services,-39.81,R1K
-2026-09-04,OKLO,Oklo Class A,-36.36,R1K
-2026-09-04,FRMI,Fermi INC,-35.91,R1K
-2026-09-04,LULU,Lululemon,-34.14,SPX+R1K
-2026-09-04,APP,Applovin Class A,-34.05,R1K
-2026-09-04,KTOS,Kratos Defense And Security Soluti,-33.22,R1K
-2026-09-04,PL,Planet Labs Class A,-32.83,R1K
-2026-09-04,DKS,Dicks Sporting,-32.41,R1K
-2026-09-04,AVAV,Aerovironment INC,-31.92,R1K
-2026-09-04,QS,Quantumscape Class A,-31.6,R1K
-2026-09-04,WHR,Whirlpool,-31.21,SPX+R1K
-2026-09-04,PLNT,Planet Fitness INC Class A,-31.03,R1K
-2026-09-04,ROL,Rollins INC,-30.85,SPX+R1K
-2026-09-04,QXO,Qxo INC,-30.16,R1K
-2026-09-04,PODD,Insulet,-29.84,SPX+R1K
-2026-09-04,PNR,Pentair,-29.32,SPX+R1K
-2026-09-04,CSGP,CoStar Group,-29.31,SPX+NDX+R1K
-2026-09-04,ONON,ON Holding AG Class A,-29.31,R1K
-2026-09-04,FICO,Fair Isaac,-28.54,SPX+R1K
-2026-09-04,BSX,Boston Scientific,-28.4,SPX+R1K
-2026-09-04,APTV,Aptiv PLC,-27.76,SPX+R1K
-2026-09-04,RBLX,Roblox CORP Class A,-27.71,R1K
-2026-09-04,BLDR,Builders FirstSource,-27.0,SPX+R1K
-2026-09-04,ESAB,Esab CORP,-26.38,R1K
-2026-09-04,Z,Zillow Group Class C,-26.11,R1K
-2026-09-04,ZTS,Zoetis,-25.7,SPX+R1K
-2026-09-04,ZG,Zillow Group Class A,-24.25,R1K
-2026-09-04,OLN,Olin CORP,-24.02,R1K
-2026-09-04,FN,Fabrinet,-24.01,R1K
-2026-09-04,FLUT,Flutter Entertainment PLC,-23.98,R1K
-2026-09-04,AMTM,Amentum Holdings,-23.94,R1K
-2026-09-04,DY,Dycom Industries INC,-23.87,R1K
-2026-09-04,NKE,Nike,-23.82,SPX+DJI+R1K
-2026-09-04,ASTS,Ast Spacemobile Class A,-23.46,R1K
-2026-09-04,IPGP,Ipg Photonics CORP,-23.06,R1K
-2026-09-04,VFC,VF CORP,-23.03,R1K
-2026-09-04,NXT,Nextpower INC Class A,-22.1,R1K
-2026-09-04,MTZ,Mastec INC,-22.09,R1K
-2026-09-04,LBRDA,Liberty Broadband CORP Series A,-21.85,R1K
-2026-09-04,INTU,Intuit,-21.66,SPX+NDX+R1K
-2026-09-04,NCLH,Norwegian Cruise Line Holdings,-21.55,SPX+R1K
-2026-09-04,MWH,Solv Energy Class A INC,-21.36,R1K
-2026-09-04,LII,Lennox International INC,-21.32,R1K
-2026-09-04,FPS,Forgent Power Solutions Class A,-21.23,R1K
-2026-09-04,ISRG,Intuitive Surgical,-20.94,SPX+NDX+R1K
-2026-09-04,IONS,Ionis Pharmaceuticals,-20.88,R1K
-2026-09-04,RMBS,Rambus,-20.85,R1K
-2026-09-04,CPNG,Coupang Class A,-20.77,R1K
-2026-09-04,ACM,Aecom,-20.18,R1K
 2026-09-08,UWMC,Uwm Holdings Class A,-58.37,R1K
 2026-09-08,KRMN,Karman Holdings INC,-44.52,R1K
 2026-09-08,TTD,Trade Desk INC Class A,-43.69,R1K
@@ -107,3 +54,78 @@ data_date,ticker,name,deviation,index
 2026-09-08,ACM,Aecom,-20.54,R1K
 2026-09-08,RBA,RB Global,-20.37,R1K
 2026-09-08,MWH,Solv Energy Class A INC,-20.03,R1K
+2026-09-09,UWMC,Uwm Holdings Class A,-58.77,R1K
+2026-09-09,KRMN,Karman Holdings INC,-50.68,R1K
+2026-09-09,TTD,Trade Desk INC Class A,-43.96,R1K
+2026-09-09,WING,Wingstop,-41.23,R1K
+2026-09-09,PRIM,Primoris Services,-40.06,R1K
+2026-09-09,APP,Applovin Class A,-36.95,R1K
+2026-09-09,PL,Planet Labs Class A,-36.31,R1K
+2026-09-09,WHR,Whirlpool,-35.19,SPX+R1K
+2026-09-09,DKS,Dicks Sporting,-35.0,R1K
+2026-09-09,KTOS,Kratos Defense And Security Soluti,-34.52,R1K
+2026-09-09,LULU,Lululemon,-34.45,SPX+R1K
+2026-09-09,QS,Quantumscape Class A,-34.24,R1K
+2026-09-09,OKLO,Oklo Class A,-33.78,R1K
+2026-09-09,PODD,Insulet,-33.76,SPX+R1K
+2026-09-09,QXO,Qxo INC,-33.38,R1K
+2026-09-09,AVAV,Aerovironment INC,-33.3,R1K
+2026-09-09,ROL,Rollins INC,-33.09,SPX+R1K
+2026-09-09,APTV,Aptiv PLC,-32.65,SPX+R1K
+2026-09-09,PNR,Pentair,-32.13,SPX+R1K
+2026-09-09,BSX,Boston Scientific,-32.12,SPX+R1K
+2026-09-09,ONON,ON Holding AG Class A,-31.94,R1K
+2026-09-09,PLNT,Planet Fitness INC Class A,-31.88,R1K
+2026-09-09,CSGP,CoStar Group,-31.78,SPX+NDX+R1K
+2026-09-09,BLDR,Builders FirstSource,-31.61,SPX+R1K
+2026-09-09,Z,Zillow Group Class C,-30.82,R1K
+2026-09-09,FRMI,Fermi INC,-29.72,R1K
+2026-09-09,ZG,Zillow Group Class A,-29.14,R1K
+2026-09-09,ESAB,Esab CORP,-28.32,R1K
+2026-09-09,ZTS,Zoetis,-27.86,SPX+R1K
+2026-09-09,AMTM,Amentum Holdings,-26.67,R1K
+2026-09-09,CELH,Celsius Holdings,-26.51,R1K
+2026-09-09,DY,Dycom Industries INC,-26.31,R1K
+2026-09-09,CHTR,Charter Comm,-26.27,SPX+NDX+R1K
+2026-09-09,VFC,VF CORP,-26.07,R1K
+2026-09-09,NKE,Nike,-25.56,SPX+DJI+R1K
+2026-09-09,INTU,Intuit,-25.5,SPX+NDX+R1K
+2026-09-09,NCLH,Norwegian Cruise Line Holdings,-25.07,SPX+R1K
+2026-09-09,RBLX,Roblox CORP Class A,-25.0,R1K
+2026-09-09,LII,Lennox International INC,-24.19,R1K
+2026-09-09,FICO,Fair Isaac,-24.19,SPX+R1K
+2026-09-09,FLUT,Flutter Entertainment PLC,-24.04,R1K
+2026-09-09,NXT,Nextpower INC Class A,-24.02,R1K
+2026-09-09,ACI,Albertsons Company Class A,-23.67,R1K
+2026-09-09,OLN,Olin CORP,-23.6,R1K
+2026-09-09,IONS,Ionis Pharmaceuticals,-23.51,R1K
+2026-09-09,ISRG,Intuitive Surgical,-23.5,SPX+NDX+R1K
+2026-09-09,HONA,Honeywell Aerospace INC,-23.4,R1K
+2026-09-09,ASTS,Ast Spacemobile Class A,-23.38,R1K
+2026-09-09,BURL,Burlington Stores,-23.34,R1K
+2026-09-09,CPNG,Coupang Class A,-23.01,R1K
+2026-09-09,ACM,Aecom,-22.75,R1K
+2026-09-09,FN,Fabrinet,-21.99,R1K
+2026-09-09,FPS,Forgent Power Solutions Class A,-21.92,R1K
+2026-09-09,OLLI,Ollies Bargain Outlet Holdings INC,-21.9,R1K
+2026-09-09,FIS,Fidelity National Info,-21.89,SPX+R1K
+2026-09-09,LBRDA,Liberty Broadband CORP Series A,-21.85,R1K
+2026-09-09,DECK,Deckers Outdoor,-21.75,SPX+R1K
+2026-09-09,MWH,Solv Energy Class A INC,-21.69,R1K
+2026-09-09,AS,Amer Sports INC,-21.69,R1K
+2026-09-09,CAVA,Cava Group,-21.69,R1K
+2026-09-09,AAON,Aaon INC,-21.57,R1K
+2026-09-09,BROS,Dutch Bros Class A,-21.32,R1K
+2026-09-09,BIRK,Birkenstock Holding PLC,-21.3,R1K
+2026-09-09,MTZ,Mastec INC,-21.07,R1K
+2026-09-09,CRUS,Cirrus Logic,-20.89,R1K
+2026-09-09,PSN,Parsons CORP,-20.88,R1K
+2026-09-09,RBA,RB Global,-20.85,R1K
+2026-09-09,RKLB,Rocket Lab CORP,-20.85,R1K
+2026-09-09,FTAI,Ftai Aviation,-20.84,R1K
+2026-09-09,IPGP,Ipg Photonics CORP,-20.83,R1K
+2026-09-09,SITE,Siteone Landscape Supply INC,-20.67,R1K
+2026-09-09,NRG,NRG Energy,-20.62,SPX+R1K
+2026-09-09,UI,Ubiquiti,-20.52,R1K
+2026-09-09,XE,X-energy INC Class A,-20.47,R1K
+2026-09-09,FOUR,Shift4 Payments Class A,-20.01,R1K
