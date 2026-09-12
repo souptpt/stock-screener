@@ -97,7 +97,7 @@ data_date,ticker,name,deviation,index
 2026-09-11,LULU,Lululemon,-34.65,SPX+R1K
 2026-09-11,BSX,Boston Scientific,-34.58,SPX+R1K
 2026-09-11,KTOS,Kratos Defense And Security Soluti,-34.39,R1K
-2026-09-11,DKS,Dicks Sporting,-33.97,R1K
+2026-09-11,DKS,Dicks Sporting,-33.34,R1K
 2026-09-11,QS,Quantumscape Class A,-32.95,R1K
 2026-09-11,PNR,Pentair,-32.88,SPX+R1K
 2026-09-11,APP,Applovin Class A,-32.77,R1K
@@ -122,9 +122,9 @@ data_date,ticker,name,deviation,index
 2026-09-11,AMTM,Amentum Holdings,-25.97,R1K
 2026-09-11,IONS,Ionis Pharmaceuticals,-25.78,R1K
 2026-09-11,NCLH,Norwegian Cruise Line Holdings,-25.11,SPX+R1K
-2026-09-11,ALB,Albemarle,-24.76,SPX+R1K
 2026-09-11,OLN,Olin CORP,-24.7,R1K
 2026-09-11,SITE,Siteone Landscape Supply INC,-24.51,R1K
+2026-09-11,ALB,Albemarle,-24.5,SPX+R1K
 2026-09-11,VFC,VF CORP,-23.95,R1K
 2026-09-11,FICO,Fair Isaac,-23.56,SPX+R1K
 2026-09-11,NXT,Nextpower INC Class A,-23.51,R1K
@@ -145,7 +145,6 @@ data_date,ticker,name,deviation,index
 2026-09-11,BWXT,Bwx Technologies INC,-21.74,R1K
 2026-09-11,NRG,NRG Energy,-21.69,SPX+R1K
 2026-09-11,ALNY,Alnylam Pharmaceuticals,-21.6,R1K
-2026-09-11,FIS,Fidelity National Info,-21.37,SPX+R1K
 2026-09-11,PSN,Parsons CORP,-21.32,R1K
 2026-09-11,MTZ,Mastec INC,-21.27,R1K
 2026-09-11,RKLB,Rocket Lab CORP,-21.23,R1K
@@ -155,6 +154,7 @@ data_date,ticker,name,deviation,index
 2026-09-11,AS,Amer Sports INC,-20.7,R1K
 2026-09-11,CPNG,Coupang Class A,-20.65,R1K
 2026-09-11,FTAI,Ftai Aviation,-20.58,R1K
+2026-09-11,FIS,Fidelity National Info,-20.47,SPX+R1K
 2026-09-11,MDLN,Medline Class A,-20.4,R1K
 2026-09-11,OLLI,Ollies Bargain Outlet Holdings INC,-20.2,R1K
 2026-09-11,CHWY,Chewy INC Class A,-20.09,R1K
