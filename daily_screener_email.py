@@ -656,6 +656,30 @@ def fill_missing_names(tickers):
     return found
 
 
+def calc_rsi(series, period=14):
+    """Wilder's RSI（严格按原著：前 period 期用简单均值播种，其后递推平滑）。
+    返回最新一期的 RSI，数据不足时返回 None。"""
+    if series is None or len(series) < period + 1:
+        return None
+    delta = series.diff().dropna()
+    if len(delta) < period:
+        return None
+
+    gains = delta.clip(lower=0).tolist()
+    losses = (-delta.clip(upper=0)).tolist()
+
+    avg_gain = sum(gains[:period]) / period
+    avg_loss = sum(losses[:period]) / period
+    for i in range(period, len(gains)):
+        avg_gain = (avg_gain * (period - 1) + gains[i]) / period
+        avg_loss = (avg_loss * (period - 1) + losses[i]) / period
+
+    if avg_loss == 0:
+        return 100.0 if avg_gain > 0 else 50.0
+    rs = avg_gain / avg_loss
+    return round(100 - (100 / (1 + rs)), 1)
+
+
 def batch_download_closes(tickers, batch_size=60):
     """批量下载收盘价，返回 {ticker: Close Series}。比逐只下载快十倍以上。"""
     out = {}
@@ -750,6 +774,7 @@ def run_screener():
             deviation = (current - ma200) / ma200
 
             if deviation <= -THRESHOLD:
+                rsi = calc_rsi(series)
                 idx = []
                 if ticker in spx_set: idx.append("SPX")
                 if ticker in ndx_set: idx.append("NDX")
@@ -763,6 +788,7 @@ def run_screener():
                     "当日涨跌%": day_chg,
                     "MA200(USD)": round(ma200, 2),
                     "偏离年线%": round(deviation * 100, 2),
+                    "RSI(14)": rsi,
                 })
         except Exception:
             continue
@@ -816,7 +842,7 @@ def run_screener():
     ws = wb.active
     headers = [ws.cell(1, c).value for c in range(1, ws.max_column + 1)]
     widths = {"股票代码":10,"公司名称":28,"所属指数":18,"收盘价(USD)":14,
-              "当日涨跌%":12,"MA200(USD)":14,"偏离年线%":12}
+              "当日涨跌%":12,"MA200(USD)":14,"偏离年线%":12,"RSI(14)":10}
     for i, h in enumerate(headers, 1):
         c = ws.cell(1, i)
         c.font = Font(bold=True, color="FFFFFF", name="Arial", size=10)
@@ -861,7 +887,7 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
     removed_html = ""
     if removed:
         removed_html += (
-            '<tr><td colspan="7" style="padding:8px 10px;background:#F7F7F5;'
+            '<tr><td colspan="8" style="padding:8px 10px;background:#F7F7F5;'
             'font-size:11.5px;color:#777;border-top:2px solid #ddd">'
             f'▲ 以下 {len(removed)} 只已回升至年线20%以内，不再入选</td></tr>'
         )
@@ -877,6 +903,7 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
                 f'<td style="{grey};text-align:right">—</td>'
                 f'<td style="{grey};text-align:right">—</td>'
                 f'<td style="{grey};text-align:right">{dv_txt}</td>'
+                f'<td style="{grey};text-align:right">—</td>'
                 f'</tr>'
             )
 
@@ -926,6 +953,19 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
                    'padding:1px 5px;border-radius:3px;margin-left:6px;'
                    'vertical-align:middle">NEW</span>') if is_new else ""
 
+        # RSI：<30 超卖(绿底) / >70 超买(红底) / 其余中性
+        rsi_v = r.get("RSI(14)")
+        if rsi_v is None or pd.isna(rsi_v):
+            rsi_html = '<span style="color:#BBB">—</span>'
+        elif rsi_v < 30:
+            rsi_html = (f'<span style="background:#EAF3DE;color:#3B6D11;font-weight:600;'
+                        f'padding:2px 7px;border-radius:4px">{rsi_v}</span>')
+        elif rsi_v > 70:
+            rsi_html = (f'<span style="background:#FCEBEB;color:#A32D2D;font-weight:600;'
+                        f'padding:2px 7px;border-radius:4px">{rsi_v}</span>')
+        else:
+            rsi_html = f'<span style="color:#666">{rsi_v}</span>'
+
         # 当日涨跌：涨绿跌红（美股习惯）
         dc = r.get("当日涨跌%")
         if dc is None or pd.isna(dc):
@@ -952,6 +992,7 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
 <td style="padding:6px 10px;border-bottom:1px solid #eee;text-align:right;color:{dc_color}">{dc_txt}</td>
 <td style="padding:6px 10px;border-bottom:1px solid #eee;text-align:right;color:#888">${r['MA200(USD)']}</td>
 <td style="padding:6px 10px;border-bottom:1px solid #eee;text-align:right;color:{color};font-weight:{weight}">{dev}%</td>
+<td style="padding:6px 10px;border-bottom:1px solid #eee;text-align:right;font-size:12px">{rsi_html}</td>
 </tr>"""
 
     stale_banner = ""
@@ -998,6 +1039,7 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
 <th style="padding:9px 10px;text-align:right">当日涨跌</th>
 <th style="padding:9px 10px;text-align:right">MA200</th>
 <th style="padding:9px 10px;text-align:right">偏离年线</th>
+<th style="padding:9px 10px;text-align:right">RSI</th>
 </tr></thead>
 <tbody>{rows_html}{removed_html}</tbody>
 </table>
