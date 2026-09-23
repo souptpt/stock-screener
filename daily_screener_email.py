@@ -30,6 +30,16 @@ SENDER_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", LOCAL_PASSWORD)
 THRESHOLD = 0.20
 OUTPUT_DIR = os.environ.get("OUTPUT_DIR", os.path.dirname(os.path.abspath(__file__)))
 
+# ═══════════════════════════════════════════════════
+#  观察名单：不受 -20% 筛选条件限制，每天固定显示
+#  想加别的票，往这个列表里加代码即可
+# ═══════════════════════════════════════════════════
+WATCHLIST = ["SOXL"]
+
+WATCHLIST_NAMES = {
+    "SOXL": "Direxion 半导体3倍做多ETF",
+}
+
 SPX_TICKERS = [
     "MMM","ABT","ABBV","ACN","ADBE","AMD","AES","AFL","A","APD","ABNB",
     "AKAM","ALB","ARE","ALGN","ALLE","LNT","ALL","GOOGL","GOOG","MO","AMZN",
@@ -744,14 +754,17 @@ def run_screener():
     names.update(COMPANY_NAMES)
 
     all_tickers = list(dict.fromkeys(
-        SPX_TICKERS + NDX_TICKERS + DJI_TICKERS + r1k
+        SPX_TICKERS + NDX_TICKERS + DJI_TICKERS + r1k + WATCHLIST
     ))
+    watch_set = set(WATCHLIST)
+    index_set = set(SPX_TICKERS) | set(NDX_TICKERS) | set(DJI_TICKERS) | set(r1k)
     print(f"  合并去重后共 {len(all_tickers)} 只，开始批量下载...\n")
 
     series_map = batch_download_closes(all_tickers)
     print(f"\n  成功获取 {len(series_map)} 只的价格数据，开始计算...\n")
 
     results = []
+    watch_rows = []
     data_date = None
 
     for ticker, series in series_map.items():
@@ -773,6 +786,22 @@ def run_screener():
 
             deviation = (current - ma200) / ma200
 
+            # 观察名单：无条件记录一行
+            if ticker in watch_set:
+                watch_rows.append({
+                    "股票代码": ticker,
+                    "公司名称": WATCHLIST_NAMES.get(ticker, names.get(ticker, "")),
+                    "所属指数": "观察",
+                    "收盘价(USD)": round(current, 2),
+                    "当日涨跌%": day_chg,
+                    "MA200(USD)": round(ma200, 2),
+                    "偏离年线%": round(deviation * 100, 2),
+                    "RSI(14)": calc_rsi(series),
+                })
+                # 不属于任何指数的观察标的，不进入筛选结果，避免重复和污染统计
+                if ticker not in index_set:
+                    continue
+
             if deviation <= -THRESHOLD:
                 rsi = calc_rsi(series)
                 idx = []
@@ -793,8 +822,18 @@ def run_screener():
         except Exception:
             continue
 
+    watch_df = pd.DataFrame(watch_rows) if watch_rows else None
+
     if not results:
-        return None, None, data_date, len(r1k), (None, [], [])
+        # 没有股票跌破阈值，但观察名单仍要照常推送
+        if watch_rows:
+            cols = ["股票代码","公司名称","所属指数","收盘价(USD)",
+                    "当日涨跌%","MA200(USD)","偏离年线%","RSI(14)"]
+            empty = pd.DataFrame(columns=cols)
+            if data_date is None:
+                data_date = datetime.now().strftime("%Y-%m-%d")
+            return empty, None, data_date, len(r1k), (None, [], []), watch_df
+        return None, None, data_date, len(r1k), (None, [], []), None
 
     df = pd.DataFrame(results).sort_values("偏离年线%")
 
@@ -833,30 +872,32 @@ def run_screener():
 
     with pd.ExcelWriter(fname, engine="openpyxl") as w:
         df.to_excel(w, sheet_name="低于年线20%以上", index=False)
+        if watch_df is not None and len(watch_df):
+            watch_df.to_excel(w, sheet_name="观察名单", index=False)
 
     # 格式 + 筛选
     from openpyxl import load_workbook
     from openpyxl.styles import Font, PatternFill, Alignment
     from openpyxl.utils import get_column_letter
     wb = load_workbook(fname)
-    ws = wb.active
-    headers = [ws.cell(1, c).value for c in range(1, ws.max_column + 1)]
     widths = {"股票代码":10,"公司名称":28,"所属指数":18,"收盘价(USD)":14,
               "当日涨跌%":12,"MA200(USD)":14,"偏离年线%":12,"RSI(14)":10}
-    for i, h in enumerate(headers, 1):
-        c = ws.cell(1, i)
-        c.font = Font(bold=True, color="FFFFFF", name="Arial", size=10)
-        c.fill = PatternFill("solid", fgColor="1F3864")
-        c.alignment = Alignment(horizontal="center", vertical="center")
-        ws.column_dimensions[get_column_letter(i)].width = widths.get(h, 14)
-    ws.auto_filter.ref = f"A1:{get_column_letter(ws.max_column)}{ws.max_row}"
-    ws.freeze_panes = "A2"
+    for ws in wb.worksheets:
+        headers = [ws.cell(1, c).value for c in range(1, ws.max_column + 1)]
+        for i, h in enumerate(headers, 1):
+            c = ws.cell(1, i)
+            c.font = Font(bold=True, color="FFFFFF", name="Arial", size=10)
+            c.fill = PatternFill("solid", fgColor="1F3864")
+            c.alignment = Alignment(horizontal="center", vertical="center")
+            ws.column_dimensions[get_column_letter(i)].width = widths.get(h, 14)
+        ws.auto_filter.ref = f"A1:{get_column_letter(ws.max_column)}{ws.max_row}"
+        ws.freeze_panes = "A2"
     wb.save(fname)
 
-    return df, fname, data_date, len(r1k), (base_date, added, removed)
+    return df, fname, data_date, len(r1k), (base_date, added, removed), watch_df
 
 
-def send_email(df, filepath, data_date, r1k_count=0, diff=None):
+def send_email(df, filepath, data_date, r1k_count=0, diff=None, watch_df=None):
     """把Excel作为附件发送，正文含完整HTML表格"""
     y, m, d = data_date.split("-")
     subject = f"SPX 500、NDX、DJCA和罗素1000指数偏离年线20%以上_{y}年{m}月{d}日"
@@ -924,6 +965,11 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
             '首次运行，暂无上一交易日可对比</div>'
         )
 
+    if watch_df is not None and len(watch_df):
+        watch_text = "\n── 观察名单 ──\n" + watch_df.to_string(index=False) + "\n"
+    else:
+        watch_text = ""
+
     # 纯文本版（备用，邮件客户端不支持HTML时显示）
     text_body = f"""SPX 500 + NDX 100 + DJCA 65 + 罗素1000 每日筛选结果
 
@@ -934,7 +980,7 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
 符合条件总数：{len(df)} 只
 偏离超过 -30%：{below_30} 只
 偏离超过 -40%：{below_40} 只
-{diff_text}
+{watch_text}{diff_text}
 
 {df.to_string(index=False)}
 
@@ -995,6 +1041,73 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
 <td style="padding:6px 10px;border-bottom:1px solid #eee;text-align:right;font-size:12px">{rsi_html}</td>
 </tr>"""
 
+    # ── 观察名单区块（不受筛选条件限制，每天固定显示）──
+    watch_html = ""
+    if watch_df is not None and len(watch_df):
+        wrows = ""
+        for _, r in watch_df.iterrows():
+            dv = r["偏离年线%"]
+            dv_color = "#C0392B" if dv <= -20 else ("#A85410" if dv < 0 else "#1A7F37")
+            flag = ('<span style="background:#FCEBEB;color:#A32D2D;font-size:9px;'
+                    'padding:1px 5px;border-radius:3px;margin-left:6px">跌破20%</span>'
+                    if dv <= -20 else "")
+
+            dc = r.get("当日涨跌%")
+            if dc is None or pd.isna(dc):
+                dc_txt, dc_col = "—", "#999"
+            elif dc > 0:
+                dc_txt, dc_col = f"+{dc}%", "#1A7F37"
+            elif dc < 0:
+                dc_txt, dc_col = f"{dc}%", "#C0392B"
+            else:
+                dc_txt, dc_col = "0.00%", "#666"
+
+            rv = r.get("RSI(14)")
+            if rv is None or pd.isna(rv):
+                rsi_c = '<span style="color:#BBB">—</span>'
+            elif rv < 30:
+                rsi_c = (f'<span style="background:#EAF3DE;color:#3B6D11;font-weight:600;'
+                         f'padding:2px 7px;border-radius:4px">{rv}</span>')
+            elif rv > 70:
+                rsi_c = (f'<span style="background:#FCEBEB;color:#A32D2D;font-weight:600;'
+                         f'padding:2px 7px;border-radius:4px">{rv}</span>')
+            else:
+                rsi_c = f'<span style="color:#666">{rv}</span>'
+
+            wrows += (
+                f'<tr>'
+                f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC;'
+                f'font-family:monospace;font-weight:600">{r["股票代码"]}{flag}</td>'
+                f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC">{r["公司名称"]}</td>'
+                f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC;text-align:right">'
+                f'${r["收盘价(USD)"]}</td>'
+                f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC;text-align:right;'
+                f'color:{dc_col}">{dc_txt}</td>'
+                f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC;text-align:right;'
+                f'color:#888">${r["MA200(USD)"]}</td>'
+                f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC;text-align:right;'
+                f'color:{dv_color};font-weight:600">{dv}%</td>'
+                f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC;text-align:right;'
+                f'font-size:12px">{rsi_c}</td>'
+                f'</tr>'
+            )
+
+        watch_html = f"""<div style="margin-bottom:24px;border:1px solid #E4E4E0;border-radius:8px;overflow:hidden">
+<div style="background:#F7F7F5;padding:8px 12px;font-size:11.5px;color:#666;
+border-bottom:1px solid #E4E4E0">观察名单 &nbsp;·&nbsp; 固定显示，不受筛选条件限制</div>
+<table style="border-collapse:collapse;width:100%;font-size:13px">
+<thead><tr style="background:#FAFAF8;color:#555;font-size:11.5px">
+<th style="padding:7px 10px;text-align:left;font-weight:600">代码</th>
+<th style="padding:7px 10px;text-align:left;font-weight:600">名称</th>
+<th style="padding:7px 10px;text-align:right;font-weight:600">收盘价</th>
+<th style="padding:7px 10px;text-align:right;font-weight:600">当日涨跌</th>
+<th style="padding:7px 10px;text-align:right;font-weight:600">MA200</th>
+<th style="padding:7px 10px;text-align:right;font-weight:600">偏离年线</th>
+<th style="padding:7px 10px;text-align:right;font-weight:600">RSI</th>
+</tr></thead>
+<tbody>{wrows}</tbody>
+</table></div>"""
+
     stale_banner = ""
     if r1k_count and R1K_CACHE_AGE_DAYS is not None and R1K_CACHE_AGE_DAYS > 400:
         stale_banner = (
@@ -1029,6 +1142,7 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
     <div style="font-size:11px;color:#777">偏离 &gt;40%</div></td>
 </tr></table>
 
+{watch_html}
 {diff_html}
 <table style="border-collapse:collapse;width:100%;font-size:13px">
 <thead><tr style="background:#1F3864;color:#fff">
@@ -1055,7 +1169,8 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
     msg.set_content(text_body)
     msg.add_alternative(html_body, subtype="html")
 
-    with open(filepath, "rb") as f:
+    if filepath and os.path.exists(filepath):
+      with open(filepath, "rb") as f:
         msg.add_attachment(
             f.read(),
             maintype="application",
@@ -1063,13 +1178,16 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None):
             filename=os.path.basename(filepath),
         )
 
+
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
         smtp.login(SENDER_EMAIL, SENDER_PASSWORD.replace(" ", ""))
         smtp.send_message(msg)
 
     print(f"  ✅ 邮件已发送至 {RECIPIENT_EMAIL}")
     print(f"     标题：{subject}")
-    print(f"     正文含 {len(df)} 行完整表格 + Excel附件")
+    extra = " + Excel附件" if (filepath and os.path.exists(filepath)) else "（无附件）"
+    wl = f" + 观察名单 {len(watch_df)} 只" if (watch_df is not None and len(watch_df)) else ""
+    print(f"     正文含 {len(df)} 行完整表格{wl}{extra}")
 
 
 def main():
@@ -1083,17 +1201,22 @@ def main():
         print("  ❌ 请先在脚本顶部填入 Gmail App Password")
         return
 
-    df, filepath, data_date, r1k_count, diff = run_screener()
+    df, filepath, data_date, r1k_count, diff, watch_df = run_screener()
 
     if df is None:
         print("  未找到符合条件的股票，不发送邮件。")
         return
 
-    print(f"\n  找到 {len(df)} 只，Excel已生成：{os.path.basename(filepath)}")
+    if filepath:
+        print(f"\n  找到 {len(df)} 只，Excel已生成：{os.path.basename(filepath)}")
+    else:
+        print(f"\n  无股票跌破阈值，但观察名单仍照常推送")
+    if watch_df is not None and len(watch_df):
+        print(f"  观察名单 {len(watch_df)} 只：{', '.join(watch_df['股票代码'])}")
     print(f"  正在发送邮件...")
 
     try:
-        send_email(df, filepath, data_date, r1k_count, diff)
+        send_email(df, filepath, data_date, r1k_count, diff, watch_df)
     except Exception as e:
         print(f"  ❌ 邮件发送失败：{e}")
         print(f"     Excel文件仍已保存：{filepath}")
