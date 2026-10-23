@@ -1,105 +1,4 @@
 data_date,ticker,name,deviation,index
-2026-10-21,UWMC,Uwm Holdings Class A,-60.24,R1K
-2026-10-21,FMC,FMC Corp,-60.14,SPX
-2026-10-21,FRMI,Fermi INC,-57.33,R1K
-2026-10-21,OKLO,Oklo Class A,-50.82,R1K
-2026-10-21,PL,Planet Labs Class A,-49.38,R1K
-2026-10-21,ASTS,Ast Spacemobile Class A,-48.46,R1K
-2026-10-21,WHR,Whirlpool,-47.21,SPX+R1K
-2026-10-21,KRMN,Karman Holdings INC,-46.6,R1K
-2026-10-21,XE,X-energy INC Class A,-45.2,R1K
-2026-10-21,QS,Quantumscape Class A,-42.22,R1K
-2026-10-21,QXO,Qxo INC,-41.96,R1K
-2026-10-21,KTOS,Kratos Defense And Security Soluti,-41.79,R1K
-2026-10-21,JBLU,JetBlue Airways,-41.38,DJI
-2026-10-21,MPT,Medical Properties Trust REIT INC,-41.33,R1K
-2026-10-21,ALM,Almonty Industries,-41.0,R1K
-2026-10-21,MTZ,Mastec INC,-40.5,R1K
-2026-10-21,TTD,Trade Desk INC Class A,-39.87,R1K
-2026-10-21,AVAV,Aerovironment INC,-39.22,R1K
-2026-10-21,IREN,Iren,-38.32,R1K
-2026-10-21,DY,Dycom Industries INC,-38.05,R1K
-2026-10-21,ALB,Albemarle,-37.72,SPX+R1K
-2026-10-21,APP,Applovin Class A,-37.58,R1K
-2026-10-21,PRIM,Primoris Services,-37.13,R1K
-2026-10-21,CAR,Avis Budget Group,-36.31,DJI+R1K
-2026-10-21,CHTR,Charter Comm,-36.29,SPX+NDX+R1K
-2026-10-21,IONS,Ionis Pharmaceuticals,-34.98,R1K
-2026-10-21,BLDR,Builders FirstSource,-34.97,SPX+R1K
-2026-10-21,APLD,Applied Digital CORP,-34.17,R1K
-2026-10-21,RKLB,Rocket Lab CORP,-33.67,R1K
-2026-10-21,CRWV,Coreweave Class A,-32.97,R1K
-2026-10-21,OLN,Olin CORP,-32.83,R1K
-2026-10-21,FN,Fabrinet,-32.71,R1K
-2026-10-21,PNR,Pentair,-31.6,SPX+R1K
-2026-10-21,AAOI,Applied Optoelectronics,-31.48,R1K
-2026-10-21,FICO,Fair Isaac,-31.08,SPX+R1K
-2026-10-21,GLXY,Galaxy Digital INC Class A,-31.07,R1K
-2026-10-21,MOD,Modine Manufacturing,-30.58,R1K
-2026-10-21,FTAI,Ftai Aviation,-30.09,R1K
-2026-10-21,ESAB,Esab CORP,-29.96,R1K
-2026-10-21,LULU,Lululemon,-29.78,SPX+R1K
-2026-10-21,WLK,Westlake CORP,-29.77,R1K
-2026-10-21,FLUT,Flutter Entertainment PLC,-29.66,R1K
-2026-10-21,WULF,Terawulf,-29.61,R1K
-2026-10-21,ROL,Rollins INC,-29.61,SPX+R1K
-2026-10-21,MP,MP Materials CORP Class A,-29.51,R1K
-2026-10-21,LBTYA,Liberty Global LTD Class A,-29.31,R1K
-2026-10-21,LBTYK,Liberty Global LTD Class C,-29.03,R1K
-2026-10-21,AA,Alcoa CORP,-28.69,R1K
-2026-10-21,FIGR,Figure Technology Solutions Class,-28.48,R1K
-2026-10-21,WING,Wingstop,-28.42,R1K
-2026-10-21,BWXT,Bwx Technologies INC,-27.68,R1K
-2026-10-21,APTV,Aptiv PLC,-27.51,SPX+R1K
-2026-10-21,IPGP,Ipg Photonics CORP,-26.98,R1K
-2026-10-21,NRG,NRG Energy,-26.96,SPX+R1K
-2026-10-21,CW,Curtiss Wright,-26.57,R1K
-2026-10-21,MGM,MGM Resorts,-26.47,SPX+R1K
-2026-10-21,INSM,Insmed INC,-26.47,R1K
-2026-10-21,DKS,Dicks Sporting,-26.24,R1K
-2026-10-21,RKT,Rocket Companies INC Class A,-26.11,R1K
-2026-10-21,MOS,Mosaic,-25.77,SPX+R1K
-2026-10-21,STRL,Sterling Infrastructure,-24.92,R1K
-2026-10-21,MWH,Solv Energy Class A INC,-24.63,R1K
-2026-10-21,ALK,Alaska Air Group,-24.63,DJI+R1K
-2026-10-21,WSC,Willscot Holdings Class A,-24.42,R1K
-2026-10-21,IONQ,Ionq,-24.39,R1K
-2026-10-21,LVS,Las Vegas Sands,-24.1,SPX+R1K
-2026-10-21,AMKR,Amkor Technology,-24.0,R1K
-2026-10-21,WYNN,Wynn Resorts,-23.95,SPX+R1K
-2026-10-21,NXT,Nextpower INC Class A,-23.85,R1K
-2026-10-21,BSX,Boston Scientific,-23.72,SPX+R1K
-2026-10-21,CAVA,Cava Group,-23.66,R1K
-2026-10-21,AAON,Aaon INC,-23.2,R1K
-2026-10-21,STWD,Starwood Property Trust REIT INC,-23.19,R1K
-2026-10-21,ALNY,Alnylam Pharmaceuticals,-22.85,R1K
-2026-10-21,LII,Lennox International INC,-22.84,R1K
-2026-10-21,SFD,Smithfield Foods INC,-22.75,R1K
-2026-10-21,PODD,Insulet,-22.73,SPX+R1K
-2026-10-21,FDXF,Fedex Freight Holding Company INC,-22.59,R1K
-2026-10-21,ACM,Aecom,-22.44,R1K
-2026-10-21,ENPH,Enphase Energy,-22.31,SPX+R1K
-2026-10-21,Z,Zillow Group Class C,-22.12,R1K
-2026-10-21,MKSI,Mks,-22.01,R1K
-2026-10-21,AXSM,Axsome Therapeutics,-21.95,R1K
-2026-10-21,BROS,Dutch Bros Class A,-21.83,R1K
-2026-10-21,CG,Carlyle Group INC,-21.71,R1K
-2026-10-21,AN,Autonation,-21.66,R1K
-2026-10-21,GPK,Graphic Packaging Holding,-21.62,R1K
-2026-10-21,BHF,Brighthouse Financial,-21.42,R1K
-2026-10-21,LKQ,Lkq CORP,-21.31,SPX+R1K
-2026-10-21,NFLX,Netflix,-21.18,SPX+NDX+R1K
-2026-10-21,SEB,Seaboard,-21.14,R1K
-2026-10-21,VRT,Vertiv Holdings Class A,-21.06,R1K
-2026-10-21,CPNG,Coupang Class A,-21.0,R1K
-2026-10-21,CDE,Coeur Mining,-20.9,R1K
-2026-10-21,LBRDA,Liberty Broadband CORP Series A,-20.9,R1K
-2026-10-21,RIVN,Rivian Automotive INC Class A,-20.74,R1K
-2026-10-21,EVR,Evercore Class A,-20.72,R1K
-2026-10-21,CRUS,Cirrus Logic,-20.52,R1K
-2026-10-21,SARO,Standardaero,-20.33,R1K
-2026-10-21,TTMI,Ttm Technologies INC,-20.19,R1K
-2026-10-21,HL,Hecla Mining,-20.09,R1K
 2026-10-22,FRMI,Fermi INC,-60.26,R1K
 2026-10-22,FMC,FMC Corp,-60.07,SPX
 2026-10-22,UWMC,Uwm Holdings Class A,-58.58,R1K
@@ -212,3 +111,118 @@ data_date,ticker,name,deviation,index
 2026-10-22,VICR,Vicor,-20.21,R1K
 2026-10-22,LII,Lennox International INC,-20.12,R1K
 2026-10-22,CPNG,Coupang Class A,-20.1,R1K
+2026-10-23,FRMI,Fermi INC,-61.59,R1K
+2026-10-23,FMC,FMC Corp,-59.68,SPX
+2026-10-23,OKLO,Oklo Class A,-52.68,R1K
+2026-10-23,PL,Planet Labs Class A,-50.32,R1K
+2026-10-23,ASTS,Ast Spacemobile Class A,-49.53,R1K
+2026-10-23,UWMC,Uwm Holdings Class A,-47.5,R1K
+2026-10-23,JBLU,JetBlue Airways,-47.23,DJI
+2026-10-23,XE,X-energy INC Class A,-46.27,R1K
+2026-10-23,IREN,Iren,-44.58,R1K
+2026-10-23,ALM,Almonty Industries,-44.04,R1K
+2026-10-23,KRMN,Karman Holdings INC,-44.04,R1K
+2026-10-23,MTZ,Mastec INC,-43.64,R1K
+2026-10-23,WHR,Whirlpool,-43.52,SPX+R1K
+2026-10-23,PRIM,Primoris Services,-43.44,R1K
+2026-10-23,APLD,Applied Digital CORP,-42.54,R1K
+2026-10-23,KTOS,Kratos Defense And Security Soluti,-41.41,R1K
+2026-10-23,DY,Dycom Industries INC,-41.21,R1K
+2026-10-23,CRWV,Coreweave Class A,-41.05,R1K
+2026-10-23,QS,Quantumscape Class A,-40.89,R1K
+2026-10-23,QXO,Qxo INC,-40.41,R1K
+2026-10-23,AAOI,Applied Optoelectronics,-40.33,R1K
+2026-10-23,FN,Fabrinet,-40.3,R1K
+2026-10-23,GLXY,Galaxy Digital INC Class A,-39.96,R1K
+2026-10-23,MPT,Medical Properties Trust REIT INC,-39.46,R1K
+2026-10-23,APP,Applovin Class A,-38.84,R1K
+2026-10-23,MOD,Modine Manufacturing,-38.23,R1K
+2026-10-23,ALB,Albemarle,-37.98,SPX+R1K
+2026-10-23,FPS,Forgent Power Solutions Class A,-37.76,R1K
+2026-10-23,WULF,Terawulf,-37.5,R1K
+2026-10-23,TTMI,Ttm Technologies INC,-37.44,R1K
+2026-10-23,TTD,Trade Desk INC Class A,-37.13,R1K
+2026-10-23,IONS,Ionis Pharmaceuticals,-36.58,R1K
+2026-10-23,CRS,Carpenter Technology,-35.89,R1K
+2026-10-23,LKQ,Lkq CORP,-35.64,SPX+R1K
+2026-10-23,AVAV,Aerovironment INC,-35.59,R1K
+2026-10-23,STRL,Sterling Infrastructure,-35.46,R1K
+2026-10-23,CHTR,Charter Comm,-35.1,SPX+NDX+R1K
+2026-10-23,RKLB,Rocket Lab CORP,-34.73,R1K
+2026-10-23,CAR,Avis Budget Group,-34.28,DJI+R1K
+2026-10-23,FIGR,Figure Technology Solutions Class,-34.01,R1K
+2026-10-23,FTAI,Ftai Aviation,-33.77,R1K
+2026-10-23,AA,Alcoa CORP,-33.35,R1K
+2026-10-23,NRG,NRG Energy,-32.14,SPX+R1K
+2026-10-23,BWXT,Bwx Technologies INC,-31.68,R1K
+2026-10-23,AMKR,Amkor Technology,-31.55,R1K
+2026-10-23,MP,MP Materials CORP Class A,-31.38,R1K
+2026-10-23,CW,Curtiss Wright,-30.79,R1K
+2026-10-23,BLDR,Builders FirstSource,-30.48,SPX+R1K
+2026-10-23,MWH,Solv Energy Class A INC,-30.46,R1K
+2026-10-23,IPGP,Ipg Photonics CORP,-29.85,R1K
+2026-10-23,AEIS,Advanced Energy Industries,-29.77,R1K
+2026-10-23,APTV,Aptiv PLC,-29.76,SPX+R1K
+2026-10-23,AAON,Aaon INC,-29.64,R1K
+2026-10-23,CDE,Coeur Mining,-29.47,R1K
+2026-10-23,OLN,Olin CORP,-29.37,R1K
+2026-10-23,COHR,Coherent,-29.14,R1K
+2026-10-23,LBTYA,Liberty Global LTD Class A,-29.12,R1K
+2026-10-23,MKSI,Mks,-29.1,R1K
+2026-10-23,ESAB,Esab CORP,-28.98,R1K
+2026-10-23,POWL,Powell Industries INC,-28.92,R1K
+2026-10-23,FICO,Fair Isaac,-28.86,SPX+R1K
+2026-10-23,MGM,MGM Resorts,-28.42,SPX+R1K
+2026-10-23,LBTYK,Liberty Global LTD Class C,-28.1,R1K
+2026-10-23,WING,Wingstop,-28.06,R1K
+2026-10-23,PNR,Pentair,-28.01,SPX+R1K
+2026-10-23,VRT,Vertiv Holdings Class A,-27.76,R1K
+2026-10-23,IESC,Ies INC,-27.75,R1K
+2026-10-23,AXSM,Axsome Therapeutics,-27.5,R1K
+2026-10-23,LVS,Las Vegas Sands,-27.43,SPX+R1K
+2026-10-23,LULU,Lululemon,-27.38,SPX+R1K
+2026-10-23,FIX,Comfort Systems USA,-27.36,R1K
+2026-10-23,FLUT,Flutter Entertainment PLC,-27.13,R1K
+2026-10-23,WYNN,Wynn Resorts,-26.67,SPX+R1K
+2026-10-23,HL,Hecla Mining,-26.6,R1K
+2026-10-23,INSM,Insmed INC,-26.51,R1K
+2026-10-23,NXT,Nextpower INC Class A,-26.45,R1K
+2026-10-23,IONQ,Ionq,-26.43,R1K
+2026-10-23,ROL,Rollins INC,-26.36,SPX+R1K
+2026-10-23,WSC,Willscot Holdings Class A,-25.68,R1K
+2026-10-23,CAVA,Cava Group,-25.63,R1K
+2026-10-23,WLK,Westlake CORP,-25.39,R1K
+2026-10-23,HWM,Howmet Aerospace,-25.36,SPX+R1K
+2026-10-23,FLEX,Flex LTD,-25.33,R1K
+2026-10-23,VKTX,Viking Therapeutics INC,-25.06,R1K
+2026-10-23,MOS,Mosaic,-24.88,SPX+R1K
+2026-10-23,DKS,Dicks Sporting,-24.59,R1K
+2026-10-23,RIVN,Rivian Automotive INC Class A,-24.37,R1K
+2026-10-23,ECG,Everus Construction Group,-24.33,R1K
+2026-10-23,BHF,Brighthouse Financial,-23.77,R1K
+2026-10-23,ONTO,Onto Innovation,-23.74,R1K
+2026-10-23,ENPH,Enphase Energy,-23.2,SPX+R1K
+2026-10-23,SPXC,Spx Technologies INC,-23.12,R1K
+2026-10-23,BROS,Dutch Bros Class A,-22.95,R1K
+2026-10-23,ALGM,Allegro Microsystems INC,-22.83,R1K
+2026-10-23,ALNY,Alnylam Pharmaceuticals,-22.72,R1K
+2026-10-23,ALK,Alaska Air Group,-22.42,DJI+R1K
+2026-10-23,PCG,PG&E,-22.06,SPX+R1K
+2026-10-23,VICR,Vicor,-22.03,R1K
+2026-10-23,RRX,Regal Rexnord,-21.74,R1K
+2026-10-23,RKT,Rocket Companies INC Class A,-21.49,R1K
+2026-10-23,TMUS,T-Mobile US,-21.45,SPX+NDX+R1K
+2026-10-23,SFD,Smithfield Foods INC,-21.26,R1K
+2026-10-23,BSX,Boston Scientific,-20.99,SPX+R1K
+2026-10-23,FSLR,First Solar,-20.95,SPX+R1K
+2026-10-23,LBRDA,Liberty Broadband CORP Series A,-20.9,R1K
+2026-10-23,RMBS,Rambus,-20.81,R1K
+2026-10-23,FDXF,Fedex Freight Holding Company INC,-20.77,R1K
+2026-10-23,ACM,Aecom,-20.76,R1K
+2026-10-23,VIAV,Viavi Solutions,-20.67,R1K
+2026-10-23,LII,Lennox International INC,-20.59,R1K
+2026-10-23,EVR,Evercore Class A,-20.47,R1K
+2026-10-23,CPNG,Coupang Class A,-20.4,R1K
+2026-10-23,CIEN,Ciena,-20.38,R1K
+2026-10-23,STWD,Starwood Property Trust REIT INC,-20.13,R1K
+2026-10-23,NCLH,Norwegian Cruise Line Holdings,-20.02,SPX+R1K
