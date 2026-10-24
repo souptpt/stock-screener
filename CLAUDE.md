@@ -9,7 +9,7 @@
 ## 文件地图
 
 ```
-daily_screener_email.py      主脚本，1231 行，所有逻辑都在这里
+daily_screener_email.py      主脚本，所有逻辑都在这里
 requirements.txt             yfinance, pandas, openpyxl, requests, lxml, html5lib
 russell1000_cache.csv        罗素1000成分股，1022 只，ticker,name,fetched
 screen_history.csv           最近 2 个交易日的名单快照，CI 自动更新，不要手改
@@ -22,14 +22,15 @@ screen_history.csv           最近 2 个交易日的名单快照，CI 自动更
 |---|---|
 | `batch_download_closes(tickers, batch_size=60)` | 批量抓收盘价，返回 `{ticker: Series}` |
 | `calc_rsi(series, period=14)` | Wilder RSI，严格播种版 |
+| `detect_gap(series, window)` | 均线窗口内单日跌幅 ≥ `GAP_THRESHOLD` 的跳水，命中返回 `(日期, 跌幅%)` |
 | `get_russell1000()` | 五级回退，缓存优先 |
 | `load_baseline(current_date)` | 取上一交易日名单做对比 |
-| `run_screener()` | 主流程，返回 6 元组 |
+| `run_screener()` | 主流程，返回 7 元组 |
 
-`run_screener()` 返回值签名（改动时注意调用方）：
+`run_screener()` 返回值签名（改动时注意调用方 `main()` 和 `send_email()`，三处 return 都要改）：
 
 ```python
-return df, fname, data_date, len(r1k), (base_date, added, removed), watch_df
+return df, fname, data_date, len(r1k), (base_date, added, removed), watch_df, suspect_df
 ```
 
 ---
@@ -49,7 +50,7 @@ cron-job.org（周一至周五，美东傍晚）
 Claude 定时任务「每日美股筛选值班」（周一至周五 美东 18:00 左右）
   └─ 在用户交接项目的那个 Claude 会话里继续：
        ├─ 查当天有没有 daily-screener.yml 的 run
-       ├─ 读 job 日志，确认有 "✅ 邮件已发送"（邮件失败时脚本仍 exit 0，Actions 照样显示绿色）
+       ├─ 读 job 日志，确认有 "✅ 邮件已发送"
        ├─ 当天没有 run → Claude 触发一次
        └─ 正常只留一行记录；失败 / 邮件没发出 → 推送通知到用户手机
 ```
@@ -94,6 +95,10 @@ if deviation <= -THRESHOLD:     # 低于年线 20% 及以上
 ```
 
 是 `<= -0.20`，不是 `>= -0.20`。这个方向被改错过一次。
+
+### 5. 出错必须非零退出
+
+邮件发送失败、App Password 仍是占位符、价格数据一只都没下载到（Yahoo 不可用）时，脚本 `sys.exit(1)`，Actions 标红。以前只是 `return`，exit 0，Actions 显示绿色，邮件没发出去也没人知道。不要改回去。历史提交步骤是 `if: always()`，失败时名单快照照常提交。
 
 ---
 
@@ -161,25 +166,28 @@ raw = re.sub(r'&(?!(amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)', '&amp;', raw)
 
 ---
 
-## 未修复的已知问题
+## 公司行为（corporate action）护栏
 
-### 🔴 公司行为（corporate action）失真
+### 起因
 
-**脚本目前对分拆、拆股、大额特别股息没有任何防护。**
+2026-10-07 实例：Corteva (CTVA) 在 10/1 把种子业务分拆为 Vylor (VYLR)，股价从 \$77.65 掉到 \$11.92。脚本拿分拆后的 \$14.45 去除一条用分拆前 \$70–80 算出的年线，得到 **−81.25%**，占据名单第一位。这是纯粹的假信号——股东手里多了价值约 \$73 的 VYLR。第二天数据源修正历史后它自动消失了，但下一个分拆的公司会重演。
 
-2026-10-07 实例：Corteva (CTVA) 在 10/1 把种子业务分拆为 Vylor (VYLR)，股价从 \$77.65 掉到 \$11.92。脚本拿分拆后的 \$14.45 去除一条用分拆前 \$70–80 算出的年线，得到 **−81.25%**，占据名单第一位。这是纯粹的假信号——股东手里多了价值约 \$73 的 VYLR。
-
-第二天数据源修正历史后它自动消失了，但下一个分拆的公司会重演。
-
-**拟议护栏（未实施）：**
+### 现行规则（2026-10-24 上线，用户看过试发邮件后选定）
 
 ```python
-pct_change = series.pct_change().dropna()
-if (pct_change.abs() > 0.40).any():
-    # 标记为公司行为失真，剔除出主名单，邮件里单独列一行说明
+GAP_THRESHOLD = 0.40
+...
+gap = detect_gap(series, ma_days)   # 只在 deviation <= -THRESHOLD 的股票上检查
 ```
 
-**实施前要想清楚的权衡：** 真实暴跌（财报爆雷、FDA 否决、诉讼败诉）单日也能跌 40%+，一刀切会漏掉真信号。可能需要结合"同期是否有关联新股上市"或"跌幅是否一天内完成且之后横盘"来区分。
+- 均线窗口（最近 `ma_days` 根，通常 200）内出现**单日跌幅 ≥ 40%** 的股票，移出主名单，进 `suspect_df`
+- 只看下跌：上跳只会压低均线，不会制造"低于年线"的假信号；窗口外的跳水不影响 MA，不算
+- 疑似名单**不进**统计卡片、`screen_history.csv`、日度对比；昨天在主名单、今天进了疑似名单的，也不算"移出"
+- 邮件里在主表下方单独列出（琥珀色区块），Excel 里是单独的 `疑似公司行为` 工作表
+
+### 权衡
+
+真实暴跌（财报爆雷、FDA 否决、诉讼败诉）单日也能跌 40%+，也会被隔离，而且会在疑似区块里待满约 200 个交易日，直到跳水移出均线窗口。信号不会丢（每天都在邮件里展示），只是不进主名单和对比。首次试跑（10/23 数据）隔离了 PRIM、CAR 两只，主名单 115 → 113。以后要缩短，可以把 `detect_gap` 的窗口改成最近 N 个交易日。
 
 ---
 
@@ -219,7 +227,7 @@ GitHub → Actions → "Daily Stock Screener" → Run workflow → `main` 分支
 
 - **改动直接推 `main`**：用户已授权。用户提出修改（例如改参数、加筛选条件）时，改好、本地验证通过后直接推 `main`，当天 18:00 那次运行就生效。推之前先 `git pull` 拿到 CI 当天提交的 `screen_history.csv`
 - **界面语言是中文**：列名、邮件正文、日志输出、commit message 都用中文
-- **Excel 列名**：`股票代码 | 公司名称 | 所属指数 | 收盘价(USD) | 当日涨跌% | MA200(USD) | 偏离年线% | RSI(14)`
+- **Excel 列名**：`股票代码 | 公司名称 | 所属指数 | 收盘价(USD) | 当日涨跌% | MA200(USD) | 偏离年线% | RSI(14)`；`疑似公司行为` 工作表再加 `跳水日期 | 单日跌幅%`
 - **邮件标题**：`SPX 500、NDX、DJCA和罗素1000指数偏离年线20%以上_{y}年{m}月{d}日`
 - **主题色**：`1F3864`（深蓝），用于表头填充和邮件标题栏
 - **观察名单**（当前只有 SOXL）每天无条件展示，但**不进入筛选统计和日度对比**——靠 `if ticker not in index_set: continue` 实现
@@ -232,7 +240,8 @@ GitHub → Actions → "Daily Stock Screener" → Run workflow → `main` 分支
 
 - [ ] 没有在 yml 里加 `schedule:`
 - [ ] `LOCAL_PASSWORD` 还是占位符
-- [ ] 改了 `run_screener()` 返回值的话，调用方同步改了
+- [ ] 改了 `run_screener()` 返回值的话，`main()` 和 `send_email()` 同步改了
 - [ ] 改了筛选条件的话，方向是 `<= -THRESHOLD`
 - [ ] 改了列的话，Excel 和邮件 HTML 两边都改了
 - [ ] 改了观察名单的话，`WATCHLIST` 和 `WATCHLIST_NAMES` 两个都改了
+- [ ] 出错时仍然 `sys.exit(1)`（邮件失败、价格数据全部下载失败）
