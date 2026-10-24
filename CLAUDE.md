@@ -46,16 +46,17 @@ cron-job.org（周一至周五，美东傍晚）
           ├─ Gmail SMTP_SSL :465 → tangpingtaotpt@gmail.com
           └─ git commit screen_history.csv 和 russell1000_cache.csv 回仓库（有变化才提交）
 
-Claude 定时任务「每日美股筛选值班」（周一至周五 美东 18:17）
+Claude 定时任务「每日美股筛选值班」（周一至周五 美东 18:00 左右）
   └─ 在用户交接项目的那个 Claude 会话里继续：
        ├─ 查当天有没有 daily-screener.yml 的 run
        ├─ 读 job 日志，确认有 "✅ 邮件已发送"（邮件失败时脚本仍 exit 0，Actions 照样显示绿色）
-       └─ 正常只留一行记录；没跑 / 失败 / 邮件没发出 → 推送通知到用户手机
+       ├─ 当天没有 run → Claude 触发一次
+       └─ 正常只留一行记录；失败 / 邮件没发出 → 推送通知到用户手机
 ```
 
 定时**不在**这个仓库里，在 cron-job.org。Claude 的检查任务在 claude.ai 的定时任务里，也不在仓库里。
 
-Claude 不能代替 cron-job.org 触发：Claude GitHub App 调 `workflow_dispatch` 返回 `403 Resource not accessible by integration`，所以检查任务发现没跑时只能提醒用户手动触发。不要停用 cron-job.org。
+Claude 可以触发工作流（2026-10-24 用户给 Claude GitHub App 授权后验证，`workflow_dispatch` 返回 204）。cron-job.org 仍是主触发，不要停用；Claude 只在当天没有任何 run 时补触发一次，当天已有 run（不论成败）绝不再触发，否则一天两封邮件。
 
 ---
 
