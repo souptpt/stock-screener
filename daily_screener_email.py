@@ -7,6 +7,7 @@ SPX 500 + NDX 100 每日筛选 + 邮件发送
 """
 
 import os
+import sys
 import time
 import smtplib
 from datetime import datetime
@@ -28,6 +29,8 @@ SENDER_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", LOCAL_PASSWORD)
 # ═══════════════════════════════════════════════════
 
 THRESHOLD = 0.20
+# 均线窗口内出现单日跌幅超过此值，视为疑似公司行为（分拆/拆股）失真，移出主名单单独列出
+GAP_THRESHOLD = 0.40
 OUTPUT_DIR = os.environ.get("OUTPUT_DIR", os.path.dirname(os.path.abspath(__file__)))
 
 # ═══════════════════════════════════════════════════
@@ -690,6 +693,19 @@ def calc_rsi(series, period=14):
     return round(100 - (100 / (1 + rs)), 1)
 
 
+def detect_gap(series, window):
+    """检查均线窗口（最近 window 根）内是否有单日跌幅超过 GAP_THRESHOLD 的跳水。
+    命中返回 (跳水日期, 单日跌幅%)，否则返回 None。
+    只看下跌：上跳只会压低均线，不会制造"低于年线"的假信号。"""
+    pct = series.iloc[-window:].pct_change().dropna()
+    if pct.empty:
+        return None
+    worst = float(pct.min())
+    if worst > -GAP_THRESHOLD:
+        return None
+    return pct.idxmin().strftime("%Y-%m-%d"), round(worst * 100, 2)
+
+
 def batch_download_closes(tickers, batch_size=60):
     """批量下载收盘价，返回 {ticker: Close Series}。比逐只下载快十倍以上。"""
     out = {}
@@ -761,10 +777,15 @@ def run_screener():
     print(f"  合并去重后共 {len(all_tickers)} 只，开始批量下载...\n")
 
     series_map = batch_download_closes(all_tickers)
+    if not series_map:
+        # 一只都没拿到是数据源故障，不是"没有符合条件的股票"；非零退出让 Actions 标红
+        print("\n  ❌ 价格数据全部下载失败（Yahoo 不可用？），不发送邮件")
+        sys.exit(1)
     print(f"\n  成功获取 {len(series_map)} 只的价格数据，开始计算...\n")
 
     results = []
     watch_rows = []
+    suspect_rows = []   # 疑似公司行为失真：不进主名单、统计和日度对比，邮件里单独列出
     data_date = None
 
     for ticker, series in series_map.items():
@@ -809,7 +830,7 @@ def run_screener():
                 if ticker in ndx_set: idx.append("NDX")
                 if ticker in dji_set: idx.append("DJI")
                 if ticker in r1k_set: idx.append("R1K")
-                results.append({
+                row = {
                     "股票代码": ticker,
                     "公司名称": names.get(ticker, ""),
                     "所属指数": "+".join(idx),
@@ -818,33 +839,47 @@ def run_screener():
                     "MA200(USD)": round(ma200, 2),
                     "偏离年线%": round(deviation * 100, 2),
                     "RSI(14)": rsi,
-                })
+                }
+                gap = detect_gap(series, ma_days)
+                if gap:
+                    row["跳水日期"], row["单日跌幅%"] = gap
+                    suspect_rows.append(row)
+                else:
+                    results.append(row)
         except Exception:
             continue
 
     watch_df = pd.DataFrame(watch_rows) if watch_rows else None
+    suspect_df = (pd.DataFrame(suspect_rows).sort_values("偏离年线%").reset_index(drop=True)
+                  if suspect_rows else None)
+    if suspect_df is not None:
+        print(f"  疑似公司行为失真 {len(suspect_df)} 只（已移出主名单）：{', '.join(suspect_df['股票代码'])}")
 
     if not results:
-        # 没有股票跌破阈值，但观察名单仍要照常推送
-        if watch_rows:
+        # 没有股票跌破阈值，但观察名单 / 疑似名单仍要照常推送
+        if watch_rows or suspect_rows:
             cols = ["股票代码","公司名称","所属指数","收盘价(USD)",
                     "当日涨跌%","MA200(USD)","偏离年线%","RSI(14)"]
             empty = pd.DataFrame(columns=cols)
             if data_date is None:
                 data_date = datetime.now().strftime("%Y-%m-%d")
-            return empty, None, data_date, len(r1k), (None, [], []), watch_df
-        return None, None, data_date, len(r1k), (None, [], []), None
+            return empty, None, data_date, len(r1k), (None, [], []), watch_df, suspect_df
+        return None, None, data_date, len(r1k), (None, [], []), None, None
 
     df = pd.DataFrame(results).sort_values("偏离年线%")
 
     # 对仍缺公司名的（数量很少）去 Yahoo 补齐
     missing = df.loc[df["公司名称"] == "", "股票代码"].tolist()
+    if suspect_df is not None:
+        missing += suspect_df.loc[suspect_df["公司名称"] == "", "股票代码"].tolist()
     if missing:
         print(f"\n  有 {len(missing)} 只缺公司名，正在从 Yahoo 补全...")
         extra = fill_missing_names(missing)
-        df["公司名称"] = df.apply(
-            lambda r: extra.get(r["股票代码"], r["公司名称"]), axis=1
-        )
+        for d in (df, suspect_df):
+            if d is not None:
+                d["公司名称"] = d.apply(
+                    lambda r: extra.get(r["股票代码"], r["公司名称"]), axis=1
+                )
 
     if data_date is None:
         data_date = datetime.now().strftime("%Y-%m-%d")
@@ -852,9 +887,11 @@ def run_screener():
     # 与上一交易日对比
     base_date, base_map = load_baseline(data_date)
     cur_set = set(df["股票代码"])
+    # 今天被移进疑似名单的不算"移出"，否则会被误写成"已回升至年线20%以内"
+    suspect_set = set(suspect_df["股票代码"]) if suspect_df is not None else set()
     if base_date:
         added_t   = [t for t in df["股票代码"] if t not in base_map]
-        removed_t = [t for t in base_map if t not in cur_set]
+        removed_t = [t for t in base_map if t not in cur_set and t not in suspect_set]
         name_map  = dict(zip(df["股票代码"], df["公司名称"]))
         dev_map   = dict(zip(df["股票代码"], df["偏离年线%"]))
         idx_map = dict(zip(df["股票代码"], df["所属指数"]))
@@ -874,6 +911,8 @@ def run_screener():
         df.to_excel(w, sheet_name="低于年线20%以上", index=False)
         if watch_df is not None and len(watch_df):
             watch_df.to_excel(w, sheet_name="观察名单", index=False)
+        if suspect_df is not None and len(suspect_df):
+            suspect_df.to_excel(w, sheet_name="疑似公司行为", index=False)
 
     # 格式 + 筛选
     from openpyxl import load_workbook
@@ -881,7 +920,8 @@ def run_screener():
     from openpyxl.utils import get_column_letter
     wb = load_workbook(fname)
     widths = {"股票代码":10,"公司名称":28,"所属指数":18,"收盘价(USD)":14,
-              "当日涨跌%":12,"MA200(USD)":14,"偏离年线%":12,"RSI(14)":10}
+              "当日涨跌%":12,"MA200(USD)":14,"偏离年线%":12,"RSI(14)":10,
+              "跳水日期":12,"单日跌幅%":12}
     for ws in wb.worksheets:
         headers = [ws.cell(1, c).value for c in range(1, ws.max_column + 1)]
         for i, h in enumerate(headers, 1):
@@ -894,13 +934,13 @@ def run_screener():
         ws.freeze_panes = "A2"
     wb.save(fname)
 
-    return df, fname, data_date, len(r1k), (base_date, added, removed), watch_df
+    return df, fname, data_date, len(r1k), (base_date, added, removed), watch_df, suspect_df
 
 
-def send_email(df, filepath, data_date, r1k_count=0, diff=None, watch_df=None):
+def send_email(df, filepath, data_date, r1k_count=0, diff=None, watch_df=None, suspect_df=None):
     """把Excel作为附件发送，正文含完整HTML表格"""
     y, m, d = data_date.split("-")
-    subject = f"SPX 500、NDX、DJCA和罗素1000指数偏离年线20%以上_{y}年{m}月{d}日"
+    subject = f"【测试版·护栏】SPX 500、NDX、DJCA和罗素1000指数偏离年线20%以上_{y}年{m}月{d}日"
 
     below_30 = len(df[df["偏离年线%"] <= -30])
     below_40 = len(df[df["偏离年线%"] <= -40])
@@ -970,6 +1010,21 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None, watch_df=None):
     else:
         watch_text = ""
 
+    has_suspect = suspect_df is not None and len(suspect_df)
+    if has_suspect:
+        suspect_text = (
+            f"\n── 疑似公司行为失真（{len(suspect_df)} 只，已移出主名单）──\n"
+            f"近 200 个交易日内出现单日跌幅超过 {GAP_THRESHOLD:.0%} 的跳水，"
+            "偏离年线可能被分拆/拆股扭曲；也可能是真实暴跌，请人工核实。\n"
+            + suspect_df.to_string(index=False) + "\n"
+        )
+        diff_html += (
+            '<div style="margin:-8px 0 14px;font-size:12.5px;color:#7A4A11">'
+            f'另有 <b>{len(suspect_df)}</b> 只疑似公司行为失真，已移出主名单，见表格下方</div>'
+        )
+    else:
+        suspect_text = ""
+
     # 纯文本版（备用，邮件客户端不支持HTML时显示）
     text_body = f"""SPX 500 + NDX 100 + DJCA 65 + 罗素1000 每日筛选结果
 
@@ -983,6 +1038,7 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None, watch_df=None):
 {watch_text}{diff_text}
 
 {df.to_string(index=False)}
+{suspect_text}
 
 （本邮件由脚本自动发送，仅供参考，不构成投资建议）
 """
@@ -1108,6 +1164,40 @@ border-bottom:1px solid #E4E4E0">观察名单 &nbsp;·&nbsp; 固定显示，不�
 <tbody>{wrows}</tbody>
 </table></div>"""
 
+    # ── 疑似公司行为失真区块（附在主表之后）──
+    suspect_html = ""
+    if has_suspect:
+        cell = "padding:7px 10px;border-bottom:1px solid #F1E3C8"
+        srows = ""
+        for _, r in suspect_df.iterrows():
+            srows += (
+                f'<tr>'
+                f'<td style="{cell};font-family:monospace;font-weight:600">{r["股票代码"]}</td>'
+                f'<td style="{cell}">{r["公司名称"]}</td>'
+                f'<td style="{cell};font-size:12px;color:#666">{r["所属指数"]}</td>'
+                f'<td style="{cell};text-align:right">${r["收盘价(USD)"]}</td>'
+                f'<td style="{cell};text-align:right">{r["跳水日期"]}</td>'
+                f'<td style="{cell};text-align:right;color:#C0392B;font-weight:600">{r["单日跌幅%"]}%</td>'
+                f'<td style="{cell};text-align:right;color:#999">{r["偏离年线%"]}%</td>'
+                f'</tr>'
+            )
+        suspect_html = f"""<div style="margin-top:22px;border:1px solid #F0D9B5;border-radius:8px;overflow:hidden">
+<div style="background:#FDF3E3;padding:9px 12px;font-size:12px;color:#7A4A11;border-bottom:1px solid #F0D9B5">
+⚠ 疑似公司行为失真 {len(suspect_df)} 只，已移出主名单 &nbsp;·&nbsp;
+近 200 个交易日内出现单日跌幅超过 {GAP_THRESHOLD:.0%} 的跳水，偏离年线可能被分拆/拆股扭曲；也可能是真实暴跌，请人工核实</div>
+<table style="border-collapse:collapse;width:100%;font-size:13px">
+<thead><tr style="background:#FFFAF2;color:#555;font-size:11.5px">
+<th style="padding:7px 10px;text-align:left;font-weight:600">代码</th>
+<th style="padding:7px 10px;text-align:left;font-weight:600">名称</th>
+<th style="padding:7px 10px;text-align:left;font-weight:600">指数</th>
+<th style="padding:7px 10px;text-align:right;font-weight:600">收盘价</th>
+<th style="padding:7px 10px;text-align:right;font-weight:600">跳水日期</th>
+<th style="padding:7px 10px;text-align:right;font-weight:600">单日跌幅</th>
+<th style="padding:7px 10px;text-align:right;font-weight:600">偏离年线(未修正)</th>
+</tr></thead>
+<tbody>{srows}</tbody>
+</table></div>"""
+
     stale_banner = ""
     if r1k_count and R1K_CACHE_AGE_DAYS is not None and R1K_CACHE_AGE_DAYS > 400:
         stale_banner = (
@@ -1157,6 +1247,7 @@ border-bottom:1px solid #E4E4E0">观察名单 &nbsp;·&nbsp; 固定显示，不�
 </tr></thead>
 <tbody>{rows_html}{removed_html}</tbody>
 </table>
+{suspect_html}
 
 <p style="margin-top:20px;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px">
 完整数据见附件 Excel。本邮件由脚本自动发送，仅供参考，不构成投资建议。</p>
@@ -1199,9 +1290,9 @@ def main():
 
     if "在这里填入" in SENDER_PASSWORD:
         print("  ❌ 请先在脚本顶部填入 Gmail App Password")
-        return
+        sys.exit(1)
 
-    df, filepath, data_date, r1k_count, diff, watch_df = run_screener()
+    df, filepath, data_date, r1k_count, diff, watch_df, suspect_df = run_screener()
 
     if df is None:
         print("  未找到符合条件的股票，不发送邮件。")
@@ -1216,11 +1307,12 @@ def main():
     print(f"  正在发送邮件...")
 
     try:
-        send_email(df, filepath, data_date, r1k_count, diff, watch_df)
+        send_email(df, filepath, data_date, r1k_count, diff, watch_df, suspect_df)
     except Exception as e:
         print(f"  ❌ 邮件发送失败：{e}")
         print(f"     Excel文件仍已保存：{filepath}")
-        return
+        # 非零退出让 Actions 标红，否则邮件没发出去也显示成功
+        sys.exit(1)
 
     print(f"\n{'='*58}")
     print(f"  ✅ 全部完成")
