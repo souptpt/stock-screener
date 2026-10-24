@@ -117,7 +117,7 @@ data_date,ticker,name,deviation,index
 2026-10-23,PL,Planet Labs Class A,-50.32,R1K
 2026-10-23,ASTS,Ast Spacemobile Class A,-49.53,R1K
 2026-10-23,UWMC,Uwm Holdings Class A,-47.5,R1K
-2026-10-23,JBLU,JetBlue Airways,-47.23,DJI
+2026-10-23,JBLU,JetBlue Airways,-47.13,DJI
 2026-10-23,XE,X-energy INC Class A,-46.27,R1K
 2026-10-23,IREN,Iren,-44.58,R1K
 2026-10-23,ALM,Almonty Industries,-44.04,R1K
@@ -159,7 +159,7 @@ data_date,ticker,name,deviation,index
 2026-10-23,MP,MP Materials CORP Class A,-31.38,R1K
 2026-10-23,CW,Curtiss Wright,-30.79,R1K
 2026-10-23,BLDR,Builders FirstSource,-30.48,SPX+R1K
-2026-10-23,MWH,Solv Energy Class A INC,-30.46,R1K
+2026-10-23,MWH,Solv Energy Class A INC,-30.45,R1K
 2026-10-23,IPGP,Ipg Photonics CORP,-29.85,R1K
 2026-10-23,AEIS,Advanced Energy Industries,-29.77,R1K
 2026-10-23,APTV,Aptiv PLC,-29.76,SPX+R1K
@@ -175,9 +175,9 @@ data_date,ticker,name,deviation,index
 2026-10-23,MGM,MGM Resorts,-28.42,SPX+R1K
 2026-10-23,LBTYK,Liberty Global LTD Class C,-28.1,R1K
 2026-10-23,WING,Wingstop,-28.06,R1K
-2026-10-23,PNR,Pentair,-28.01,SPX+R1K
 2026-10-23,VRT,Vertiv Holdings Class A,-27.76,R1K
 2026-10-23,IESC,Ies INC,-27.75,R1K
+2026-10-23,PNR,Pentair,-27.66,SPX+R1K
 2026-10-23,AXSM,Axsome Therapeutics,-27.5,R1K
 2026-10-23,LVS,Las Vegas Sands,-27.43,SPX+R1K
 2026-10-23,LULU,Lululemon,-27.38,SPX+R1K
@@ -219,7 +219,7 @@ data_date,ticker,name,deviation,index
 2026-10-23,RMBS,Rambus,-20.81,R1K
 2026-10-23,FDXF,Fedex Freight Holding Company INC,-20.77,R1K
 2026-10-23,ACM,Aecom,-20.76,R1K
-2026-10-23,VIAV,Viavi Solutions,-20.67,R1K
+2026-10-23,VIAV,Viavi Solutions,-20.65,R1K
 2026-10-23,LII,Lennox International INC,-20.59,R1K
 2026-10-23,EVR,Evercore Class A,-20.47,R1K
 2026-10-23,CPNG,Coupang Class A,-20.4,R1K
