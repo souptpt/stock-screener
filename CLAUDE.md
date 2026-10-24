@@ -230,7 +230,7 @@ GitHub → Actions → "Daily Stock Screener" → Run workflow → `main` 分支
 - **Excel 列名**：`股票代码 | 公司名称 | 所属指数 | 收盘价(USD) | 当日涨跌% | MA200(USD) | 偏离年线% | RSI(14)`；`疑似公司行为` 工作表再加 `跳水日期 | 单日跌幅%`
 - **邮件标题**：`SPX 500、NDX、DJCA和罗素1000指数偏离年线20%以上_{y}年{m}月{d}日`
 - **主题色**：`1F3864`（深蓝），用于表头填充和邮件标题栏
-- **观察名单**（当前只有 SOXL）每天无条件展示，但**不进入筛选统计和日度对比**——靠 `if ticker not in index_set: continue` 实现
+- **观察名单**（当前 SOXL、`^GSPC` 标普500指数）每天无条件展示（指数用 Yahoo 代码，`^` 开头的在邮件里不加 `$`），但**不进入筛选统计和日度对比**——靠 `if ticker not in index_set: continue` 实现
 - **Excel 自动筛选**：`auto_filter.ref` 必须覆盖全部数据行（`A1:{last_col}{max_row}`），只写表头会导致下拉箭头点不动；同时要取消所有合并单元格
 - **工作表名不能含 `/`**，openpyxl 会直接报错，用 `&` 替代
 

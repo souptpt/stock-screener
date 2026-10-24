@@ -37,10 +37,11 @@ OUTPUT_DIR = os.environ.get("OUTPUT_DIR", os.path.dirname(os.path.abspath(__file
 #  观察名单：不受 -20% 筛选条件限制，每天固定显示
 #  想加别的票，往这个列表里加代码即可
 # ═══════════════════════════════════════════════════
-WATCHLIST = ["SOXL"]
+WATCHLIST = ["SOXL", "^GSPC"]   # 指数用 Yahoo 代码，^GSPC = 标普500指数(SPX)
 
 WATCHLIST_NAMES = {
     "SOXL": "Direxion 半导体3倍做多ETF",
+    "^GSPC": "标普500指数 (SPX)",
 }
 
 SPX_TICKERS = [
@@ -1130,17 +1131,20 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None, watch_df=None, s
             else:
                 rsi_c = f'<span style="color:#666">{rv}</span>'
 
+            # 指数（^ 开头）是点数，不加 $
+            cur = "" if str(r["股票代码"]).startswith("^") else "$"
+
             wrows += (
                 f'<tr>'
                 f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC;'
                 f'font-family:monospace;font-weight:600">{r["股票代码"]}{flag}</td>'
                 f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC">{r["公司名称"]}</td>'
                 f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC;text-align:right">'
-                f'${r["收盘价(USD)"]}</td>'
+                f'{cur}{r["收盘价(USD)"]}</td>'
                 f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC;text-align:right;'
                 f'color:{dc_col}">{dc_txt}</td>'
                 f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC;text-align:right;'
-                f'color:#888">${r["MA200(USD)"]}</td>'
+                f'color:#888">{cur}{r["MA200(USD)"]}</td>'
                 f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC;text-align:right;'
                 f'color:{dv_color};font-weight:600">{dv}%</td>'
                 f'<td style="padding:7px 10px;border-bottom:1px solid #EFEFEC;text-align:right;'
