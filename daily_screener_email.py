@@ -8,6 +8,7 @@ SPX 500 + NDX 100 每日筛选 + 邮件发送
 
 import os
 import sys
+import html as _html
 import time
 import smtplib
 from datetime import datetime
@@ -938,8 +939,10 @@ def run_screener():
     return df, fname, data_date, len(r1k), (base_date, added, removed), watch_df, suspect_df
 
 
-def send_email(df, filepath, data_date, r1k_count=0, diff=None, watch_df=None, suspect_df=None):
-    """把Excel作为附件发送，正文含完整HTML表格"""
+def send_email(df, filepath, data_date, r1k_count=0, diff=None, watch_df=None, suspect_df=None,
+               soxl=None):
+    """把Excel作为附件发送，正文含完整HTML表格。
+    soxl：soxl_alert.build_report() 的结果；生成失败时传 {"error": 原因}，None 表示不显示。"""
     y, m, d = data_date.split("-")
     subject = f"SPX 500、NDX、DJCA和罗素1000指数偏离年线20%以上_{y}年{m}月{d}日"
 
@@ -1006,6 +1009,17 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None, watch_df=None, s
             '首次运行，暂无上一交易日可对比</div>'
         )
 
+    # ── SOXL 波段信号区块（soxl_alert.py）──
+    soxl_text, soxl_html = "", ""
+    if soxl and "error" in soxl:
+        soxl_text = f"\n── SOXL 波段信号 ──\n⚠ 今天没生成出来：{soxl['error']}\n"
+        soxl_html = ('<div style="margin-bottom:24px;background:#FDF3E3;border-left:4px solid #E67E22;'
+                     'padding:8px 12px;font-size:12.5px;color:#7A4A11">'
+                     f'⚠ SOXL 波段信号今天没生成出来：{_html.escape(soxl["error"])}</div>')
+    elif soxl:
+        soxl_text = "\n" + soxl["text"]
+        soxl_html = soxl["html"]
+
     if watch_df is not None and len(watch_df):
         watch_text = "\n── 观察名单 ──\n" + watch_df.to_string(index=False) + "\n"
     else:
@@ -1036,7 +1050,7 @@ def send_email(df, filepath, data_date, r1k_count=0, diff=None, watch_df=None, s
 符合条件总数：{len(df)} 只
 偏离超过 -30%：{below_30} 只
 偏离超过 -40%：{below_40} 只
-{watch_text}{diff_text}
+{watch_text}{soxl_text}{diff_text}
 
 {df.to_string(index=False)}
 {suspect_text}
@@ -1237,6 +1251,7 @@ border-bottom:1px solid #E4E4E0">观察名单 &nbsp;·&nbsp; 固定显示，不�
 </tr></table>
 
 {watch_html}
+{soxl_html}
 {diff_html}
 <table style="border-collapse:collapse;width:100%;font-size:13px">
 <thead><tr style="background:#1F3864;color:#fff">
@@ -1310,8 +1325,18 @@ def main():
         print(f"  观察名单 {len(watch_df)} 只：{', '.join(watch_df['股票代码'])}")
     print(f"  正在发送邮件...")
 
+    # SOXL 波段信号：出错只在邮件里提示，不影响主筛选邮件
     try:
-        send_email(df, filepath, data_date, r1k_count, diff, watch_df, suspect_df)
+        import soxl_alert
+        soxl = soxl_alert.build_report()
+        print(f"  SOXL 波段信号已生成（{soxl['data_date']}）")
+        print(soxl["text"])
+    except Exception as e:
+        print(f"  ⚠ SOXL 波段信号生成失败：{e!r}")
+        soxl = {"error": f"{type(e).__name__}: {e}"}
+
+    try:
+        send_email(df, filepath, data_date, r1k_count, diff, watch_df, suspect_df, soxl)
     except Exception as e:
         print(f"  ❌ 邮件发送失败：{e}")
         print(f"     Excel文件仍已保存：{filepath}")

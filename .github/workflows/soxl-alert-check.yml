@@ -1,0 +1,17 @@
+name: SOXL 信号核对（临时，只打印不发邮件）
+
+on:
+  push:
+    branches: [claude/new-session-s91a0v]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python soxl_alert.py --html soxl.html
