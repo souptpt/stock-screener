@@ -184,7 +184,8 @@ def add_indicators(D):
 # ═══════════════════════════ 回测引擎 ═══════════════════════════
 
 def simulate(D, entry, exit_rule, steps=(0.0,), frac=(1.0,), cap=None,
-             breaker=0.40, size=None, fill="close", trail=None, cost=COST):
+             breaker=0.40, size=None, fill="close", trail=None, cost=COST, trig=None,
+             noise=0.0, rng=None, buy_halt=None, maxloss=None, no_add=None):
     """通用阶梯回测，按实际持股计算。
 
     entry     : 布尔数组，当天收盘触发首笔买入
@@ -194,10 +195,23 @@ def simulate(D, entry, exit_rule, steps=(0.0,), frac=(1.0,), cap=None,
     cap       : 最长持有交易日数
     breaker   : SOX 距 52 周高点跌超此值清仓停买，直到站上 200 日均线；None 关闭
     size      : 每日仓位倍数数组（可选）
-    fill      : "close" 当天收盘成交；"open" 第二天开盘成交
+    fill      : "close" 当天收盘成交；"open" 第二天开盘成交；
+                "limit" 买入按事先算好的触发价挂限价单（当天最低价触到就成交，成交价 = min(开盘, 触发价)），
+                卖出仍按当天收盘（临近收盘看一眼再卖）。需要传 trig（每日触发价数组）
+    trig      : fill="limit" 时每日的买入触发价（用前一天数据算出，例如前 9 日最低收盘）
+    noise     : 成交价随机扰动的标准差（如 0.01 = 1%），用于测试结果对成交价的敏感程度
+    buy_halt  : 布尔数组，为 True 的日子不开新仓、不加仓（例如 SOX 距高点跌超 25%），但不强制卖出
+    maxloss   : 单笔相对平均成本亏损超过此比例（如 0.30）时清仓
+    no_add    : 布尔数组，为 True 的日子不加仓（可开首笔）
     trail     : 追踪止盈，比持仓期间最高收盘回落此比例卖出（可选）
     """
-    c = D.c.values; o = D.o.values; cr = D.cash.values
+    c = D.c.values; o = D.o.values; cr = D.cash.values; D_l = D.l.values
+    if noise and rng is None:
+        rng = np.random.default_rng()
+    def px_noise(p):
+        return p * (1 + rng.normal(0, noise)) if noise else p
+    bh = buy_halt if buy_halt is not None else np.zeros(len(c), dtype=bool)
+    na = no_add if no_add is not None else np.zeros(len(c), dtype=bool)
     sxdd = D.sx_dd.values; sxup = D.sx_up.values
     n = len(c)
     curve = np.empty(n); V = 0.0; C = 1.0; sh = 0.0
@@ -237,29 +251,46 @@ def simulate(D, entry, exit_rule, steps=(0.0,), frac=(1.0,), cap=None,
                 sell, why = True, "追踪止盈"
             if not sell and cap and held >= cap:
                 sell, why = True, "时间上限"
+            if not sell and maxloss is not None and c[i] / avg - 1 <= -maxloss:
+                sell, why = True, f"止损{maxloss:.0%}"
             if not sell and breaker is not None and halt:
                 sell, why = True, "行业熔断"
             if sell:
-                if fill == "close":
-                    C += V * (1 - cost)
-                    trades.append(dict(k0=k0, k1=i, ret=c[i] / avg - 1, fills=len(fp), held=held, why=why))
+                if fill in ("close", "limit"):
+                    spx = px_noise(c[i])
+                    C += sh * spx * (1 - cost)
+                    trades.append(dict(k0=k0, k1=i, ret=spx / avg - 1, fills=len(fp), held=held, why=why))
                     sh = 0.0; V = 0.0; fp, fa = [], []
                 else:
                     pending = ("sell", why)
             else:
                 k = len(fp)
-                if k < len(steps) and c[i] / fp[-1] - 1 <= steps[k] - steps[k - 1]:
+                if fill == "limit":
+                    if k < len(steps):
+                        tp = fp[-1] * (1 + steps[k] - steps[k - 1])
+                        if D_l[i] <= tp:
+                            px = min(o[i], tp) if not np.isnan(o[i]) else tp
+                            amt = min(base * frac[k], C); C -= amt
+                            sh += amt * (1 - cost) / px; fp.append(px); fa.append(amt)
+                elif k < len(steps) and c[i] / fp[-1] - 1 <= steps[k] - steps[k - 1] and not bh[i] and not na[i]:
                     if fill == "close":
+                        bpx = px_noise(c[i])
                         amt = min(base * frac[k], C); C -= amt
-                        sh += amt * (1 - cost) / c[i]; fp.append(c[i]); fa.append(amt)
+                        sh += amt * (1 - cost) / bpx; fp.append(bpx); fa.append(amt)
                     else:
                         pending = ("buy", k)
-        elif not halt and entry[i] and pending is None:
+        elif not halt and fill == "limit" and trig is not None and not np.isnan(trig[i]) and D_l[i] <= trig[i]:
+            px = min(o[i], trig[i]) if not np.isnan(o[i]) else trig[i]
+            base = (sh * c[i] + C) * (1.0 if size is None else float(size[i])); k0 = i; peak = c[i]
+            amt = min(base * frac[0], C); C -= amt
+            sh = amt * (1 - cost) / px; fp, fa = [px], [amt]
+        elif not halt and not bh[i] and entry[i] and pending is None and fill != "limit":
             mult = 1.0 if size is None else float(size[i])
             if fill == "close":
+                bpx = px_noise(c[i])
                 base = (V + C) * mult; k0 = i; peak = c[i]
                 amt = min(base * frac[0], C); C -= amt
-                sh = amt * (1 - cost) / c[i]; fp, fa = [c[i]], [amt]
+                sh = amt * (1 - cost) / bpx; fp, fa = [bpx], [amt]
             else:
                 base_mult = mult
                 pending = ("buy", 0)
