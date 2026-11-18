@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>打开 Claude</title>
+<style>
+  body{margin:0;font:16px -apple-system,"PingFang SC",sans-serif;background:#1F3864;color:#fff;display:grid;place-items:center;min-height:100vh;text-align:center}
+  main{padding:24px}
+  a.btn{display:block;margin:14px auto;padding:14px 22px;border-radius:12px;background:#fff;color:#1F3864;font-weight:700;text-decoration:none;max-width:280px}
+  p{opacity:.8;font-size:14px}
+</style>
+</head>
+<body>
+<main>
+  <h1 style="font-size:20px">正在打开 Claude app…</h1>
+  <a class="btn" id="app" href="#">打开 Claude app</a>
+  <a class="btn" id="ul" href="#">没反应？点这里</a>
+  <p id="msg">只打开 Claude app 里的对话。链接里的对话编号放在 # 后面，不会发给任何服务器。</p>
+</main>
+<script>
+  // Usage: open-claude.html#s=session_XXXX  -> claude://code/session_XXXX (Claude app route)
+  // The id travels only in the URL fragment, which browsers never send to the server.
+  var m = /(?:^|[#&])s=(session_[A-Za-z0-9]+)/.exec(location.hash);
+  if (!m) { document.getElementById('msg').textContent = '链接不完整：缺少对话编号。'; }
+  else {
+    var app = 'claude://code/' + m[1], ul = 'https://claude.ai/code/' + m[1];
+    document.getElementById('app').href = app;
+    document.getElementById('ul').href = ul;   // a tap from another site lets iOS hand claude.ai links to the app
+    location.href = app;
+  }
+</script>
+</body>
+</html>
