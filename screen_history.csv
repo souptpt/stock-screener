@@ -158,7 +158,6 @@ data_date,ticker,name,deviation,index
 2026-11-25,ALM,Almonty Industries,-56.22,R1K
 2026-11-25,MPT,Medical Properties Trust REIT INC,-56.08,R1K
 2026-11-25,XE,X-energy INC Class A,-55.06,R1K
-2026-11-25,SNDK,Sandisk,-54.19,R1K
 2026-11-25,TTMI,Ttm Technologies INC,-53.7,R1K
 2026-11-25,STRL,Sterling Infrastructure,-52.08,R1K
 2026-11-25,QS,Quantumscape Class A,-51.97,R1K
@@ -181,6 +180,7 @@ data_date,ticker,name,deviation,index
 2026-11-25,ALB,Albemarle,-42.5,SPX+R1K
 2026-11-25,IONQ,Ionq,-42.2,R1K
 2026-11-25,LITE,Lumentum Holdings,-41.53,R1K
+2026-11-25,SNDK,Sandisk,-41.26,R1K
 2026-11-25,CRDO,Credo Technology Group Holding LTD,-40.95,R1K
 2026-11-25,CRS,Carpenter Technology,-40.93,R1K
 2026-11-25,IESC,Ies INC,-40.91,R1K
@@ -218,8 +218,8 @@ data_date,ticker,name,deviation,index
 2026-11-25,ONTO,Onto Innovation,-33.63,R1K
 2026-11-25,FICO,Fair Isaac,-33.61,SPX+R1K
 2026-11-25,BMNR,Bitmine Immersion Technologies,-33.39,R1K
-2026-11-25,MKSI,Mks,-33.3,R1K
 2026-11-25,AUR,Aurora Innovation Class A,-33.27,R1K
+2026-11-25,MKSI,Mks,-33.21,R1K
 2026-11-25,APTV,Aptiv PLC,-33.06,SPX+R1K
 2026-11-25,MP,MP Materials CORP Class A,-33.03,R1K
 2026-11-25,STX,Seagate,-32.85,SPX
@@ -285,7 +285,7 @@ data_date,ticker,name,deviation,index
 2026-11-25,OLN,Olin CORP,-21.67,R1K
 2026-11-25,CAVA,Cava Group,-21.57,R1K
 2026-11-25,BKR,Baker Hughes,-21.52,SPX+R1K
-2026-11-25,AAON,Aaon INC,-20.84,R1K
+2026-11-25,AAON,Aaon INC,-20.74,R1K
 2026-11-25,SEB,Seaboard,-20.65,R1K
 2026-11-25,AKAM,Akamai,-20.64,SPX+R1K
 2026-11-25,INTU,Intuit,-20.61,SPX+NDX+R1K
